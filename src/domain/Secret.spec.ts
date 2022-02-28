@@ -24,11 +24,10 @@ describe("Testing Secret class", () => {
     expect(s.message).to.be.eq("msg");
   });
   it("should return an object with constructor(undefined, 'msg', afile)", () => {
-    const f = File;
-    const s = new Secret(undefined, "msg");
+    const s = new Secret(undefined, "msg", "afile");
     expect(s).not.to.be.undefined;
     expect(s.id).to.be.a.string;
-    expect(s.attachmentFilename).to.be.undefined;
+    expect(s.attachmentFilename).to.be.a.string;
     expect(s.message).to.be.eq("msg");
   });
 });
