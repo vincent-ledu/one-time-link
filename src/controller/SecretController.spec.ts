@@ -26,14 +26,7 @@ describe("Secret controller tests", () => {
 
     expect(status.calledOnce).to.be.true;
     expect(status.args[0][0]).to.eq(201);
-    expect(res.body).to.be.a.string;
-    Logger.info(
-      "###################CREATE SECRET################ res.body: " + res.body
-    );
-    Logger.info(
-      "###################CREATE SECRET################ res.status: " +
-        status.args[0][0]
-    );
+    expect(await res.body).to.be.a.string;
   });
   it("should return a secret unencrypted", async () => {
     const req: any = { body: { id: "123", password: "test" } };
@@ -41,9 +34,6 @@ describe("Secret controller tests", () => {
       new AES256EncryptService("./tests/data/")
     );
     await secretController.deleteSecret(req, res, next);
-    Logger.info(
-      "######################################### res.body: " + res.body
-    );
     expect(status.args[0][0]).to.eq(200);
     console.log(res.body);
     expect(res.body).to.be.eq({ message: "Hello" });

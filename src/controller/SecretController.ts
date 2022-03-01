@@ -19,11 +19,9 @@ export class SecretController extends AController {
   ): Promise<void> => {
     let payload = req.body;
     let secret = new Secret(payload.id, undefined, undefined, payload.password);
-    Logger.info(`deleteSecret secret.password: ${secret.password}`);
-    this.encryptService.decryptSecret(secret, false).then((sec) => {
-      secret.message = sec.message;
-      res.status(200).send(secret);
-    });
+    let sec = await this.encryptService.decryptSecret(secret, false);
+    secret.message = sec.message;
+    res.status(200).send(secret);
   };
   createSecret = async (
     req: Request,
@@ -32,8 +30,6 @@ export class SecretController extends AController {
   ): Promise<void> => {
     // get msg to encrypt
     let payload = req.body;
-    Logger.info(`payload: ${payload}`);
-    console.log(payload);
     let secret = new Secret(
       undefined,
       payload.message,
@@ -43,11 +39,8 @@ export class SecretController extends AController {
     // generate unique route with uuid secret
 
     // store msg to fs in sh256 folder
-    this.encryptService.encryptSecret(secret);
+    await this.encryptService.encryptSecret(secret);
     // send link for share msg
-    Logger.debug(
-      `########### secretcontroller-create secret ######## secrete.id: ${secret.id}`
-    );
     res.status(201).send(secret.id);
   };
 }

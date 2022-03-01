@@ -36,15 +36,15 @@ describe("Testing encryption service", () => {
     await encrypter.encryptMessage(folder, message, password);
     expect(fs.existsSync(path.join(folder + "msg.enc"))).to.be.true;
   });
-  // it("should decrypt message", async () => {
-  //   const folder = "./tests/data/msg2/";
-  //   const password = "toto";
+  it("should decrypt message", async () => {
+    const folder = "./tests/data/msg2/";
+    const password = "toto";
 
-  //   const encrypter = new AES256EncryptService(folder);
-  //   encrypter.decryptMessage(folder, password).then((message) => {
-  //     expect(message).to.be.eq("hello");
-  //   });
-  // });
+    const encrypter = new AES256EncryptService(folder);
+    encrypter.decryptMessage(folder, password).then((message) => {
+      expect(message).to.be.eq("hello");
+    });
+  });
   it("should encrypt secret", async () => {
     const folder = "./tests/data/";
     const secret = new Secret(

@@ -7,6 +7,6 @@ export interface IEncryptService {
   // decryptFile(folder: string, file: string, password: string): void;
   // encryptMessage(folder: string, text: string, password: string): void;
   // decryptMessage(folder: string, password: string): Promise<string>;
-  encryptSecret(secret: Secret): void;
+  encryptSecret(secret: Secret): Promise<void>;
   decryptSecret(secret: Secret, unlink: boolean): Promise<Secret>;
 }
