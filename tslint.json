@@ -1,4 +1,6 @@
 {
+  "max-line-length": [true, 120],
+
   "defaultSeverity": "error",
   "extends": [
     "tslint:recommended"

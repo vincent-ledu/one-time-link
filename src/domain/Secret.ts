@@ -14,7 +14,7 @@ export class Secret {
   ) {
     this.id = id || uuidv4();
     this.message = message || "";
-    this.password = this.password || "";
+    this.password = password || "";
     this.attachmentFilename = attachmentFilename || undefined;
   }
 }
