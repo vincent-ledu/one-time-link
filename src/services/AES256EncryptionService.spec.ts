@@ -66,8 +66,7 @@ describe("Testing encryption service", () => {
       "test"
     );
     const encrypter = new AES256EncryptService(folder);
-    encrypter.decryptSecret(secret).then((sec) => {
-      console.log(sec);
-    });
+    let sec = await encrypter.decryptSecret(secret, false);
+    expect(sec.message).to.be.equals("test");
   });
 });

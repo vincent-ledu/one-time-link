@@ -21,6 +21,7 @@ export class AES256EncryptService implements IEncryptService {
     Logger.info(
       `Encrypting secret ${secret.id} in ${path.join(this.baseDir, secret.id)}`
     );
+
     if (secret.message !== "") {
       this.encryptMessage(
         path.join(this.baseDir, secret.id),
@@ -41,21 +42,25 @@ export class AES256EncryptService implements IEncryptService {
     unlink: boolean = true
   ): Promise<Secret> => {
     Logger.info(`Decrypting secret ${secret.id}`);
-
+    console.log(secret);
     if (fs.existsSync(path.join(this.baseDir, secret.id))) {
       secret.message = await this.decryptMessage(
         path.join(this.baseDir, secret.id),
         secret.password
       );
-      if (false && unlink) {
+      Logger.debug(`unlink: ${unlink}`);
+      if (unlink) {
+        Logger.info(`deleting ${(path.join, secret.id)}`);
         fs.rm(
           path.join(this.baseDir, secret.id),
           { recursive: true, force: true },
           (err) => {
-            Logger.error(
-              `Can't unlink folder ${path.join(this.baseDir, secret.id)}`,
-              err
-            );
+            if (err)
+              Logger.error(
+                `Can't unlink folder ${path.join(this.baseDir, secret.id)} - ${
+                  err.message
+                }`
+              );
           }
         );
       }
@@ -71,17 +76,23 @@ export class AES256EncryptService implements IEncryptService {
     password: string
   ): Promise<void> => {
     // Generate a secure, pseudo random initialization vector.
-    Logger.info(`Encrypting message in folder ${folder}`);
+    Logger.info(`AES256 enc service - Encrypting message in folder ${folder}`);
     const initVect = crypto.randomBytes(16);
 
     // Generate a cipher key from the password.
+    Logger.debug("getting cipher key");
     const CIPHER_KEY = this.getCipherKey(password);
+    Logger.debug("getting message");
     const message = Readable.from([text]);
+    Logger.debug("get gzip");
     const gzip = zlib.createGzip();
+    Logger.debug("create cipher iv");
     const cipher = crypto.createCipheriv("aes256", CIPHER_KEY, initVect);
+    Logger.debug("appending init vector");
     const appendInitVect = new AppendInitVect(initVect, undefined);
     // Create a write stream with a different file extension.
     if (!fs.existsSync(folder)) {
+      Logger.debug("Creating missing fs");
       fs.mkdirSync(folder, { recursive: true });
     }
     const writeStream = fs.createWriteStream(path.join(folder, "msg.enc"));
