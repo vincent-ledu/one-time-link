@@ -11,7 +11,6 @@ export class HomeController extends AController {
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    res.render("pages/home");
-    res.status(200).send();
+    res.status(200).render("pages/home");
   };
 }

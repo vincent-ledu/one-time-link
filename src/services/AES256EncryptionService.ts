@@ -55,12 +55,13 @@ export class AES256EncryptService implements IEncryptService {
           path.join(this.baseDir, secret.id),
           { recursive: true, force: true },
           (err) => {
-            if (err)
+            if (err) {
               Logger.error(
                 `Can't unlink folder ${path.join(this.baseDir, secret.id)} - ${
                   err.message
                 }`
               );
+            }
           }
         );
       }
@@ -140,7 +141,6 @@ export class AES256EncryptService implements IEncryptService {
   getCipherKey(password: string) {
     return crypto.createHash("sha256").update(password).digest();
   }
-
   encryptFile = async (
     folder: string,
     file: string,

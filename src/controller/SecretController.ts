@@ -12,7 +12,10 @@ export class SecretController extends AController {
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    res.render("pages/getSecret", { id: req.params.id });
+    res.render("pages/getSecret", {
+      id: req.params.id,
+      password: req.params.password,
+    });
   };
   encryptService: IEncryptService;
 
@@ -33,8 +36,7 @@ export class SecretController extends AController {
       res.status(200).send(secret);
       Logger.debug(`deleteSecret sec.message - ${sec.message}`);
     } catch (e) {
-      Logger.error("Error while decrypting");
-      res.status(500).send("Error");
+      AController.processErrors(e, res);
     }
   };
 
@@ -46,6 +48,25 @@ export class SecretController extends AController {
     res.render("pages/createSecret");
   };
 
+  generatePwd(): string {
+    // Creating an empty array
+    const result = [];
+
+    // list of normal characters
+    let characters =
+      "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const charactersLength = characters.length;
+
+    // For loop to randomly select a random character from characters and add it to the result. You can change the length, (Default: 12)
+    for (var i = 0; i < 24; i++) {
+      result.push(
+        characters.charAt(Math.floor(Math.random() * charactersLength))
+      );
+    }
+
+    return result.join("");
+  }
+
   createSecret = async (
     req: Request,
     res: Response,
@@ -53,20 +74,21 @@ export class SecretController extends AController {
   ): Promise<void> => {
     // get msg to encrypt
     let payload = req.body;
-    Logger.debug(`secretController - create secret - body:`);
-    console.log(req.body);
     let secret = new Secret(
       undefined,
       payload.message,
       undefined,
-      payload.password
+      this.generatePwd()
     );
-    // generate unique route with uuid secret
 
-    // store msg to fs in sh256 folder
-    await this.encryptService.encryptSecret(secret);
-    // send link for share msg
-    //  res.status(201).send(secret.id);
-    res.status(201).render("pages/secretCreated", { id: secret.id });
+    try {
+      await this.encryptService.encryptSecret(secret);
+      res.render("pages/secretCreated", {
+        id: secret.id,
+        password: secret.password,
+      });
+    } catch (e) {
+      AController.processErrors(e, res);
+    }
   };
 }
