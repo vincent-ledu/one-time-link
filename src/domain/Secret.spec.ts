@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { Secret } from "./Secret";
-
+/* tslint:disable no-unused-expression */
 describe("Testing Secret class", () => {
   it("should return an object with constructor()", () => {
     const s = new Secret();

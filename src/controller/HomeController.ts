@@ -11,6 +11,6 @@ export class HomeController extends AController {
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    res.status(200).render("pages/home");
+    res.status(200).render("pages/createSecret");
   };
 }

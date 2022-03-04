@@ -28,13 +28,12 @@ export class SecretController extends AController {
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    let payload = req.body;
-    let secret = new Secret(payload.id, undefined, undefined, payload.password);
+    const payload = req.body;
+    const secret = new Secret(payload.id, undefined, undefined, payload.password);
     try {
-      let sec = await this.encryptService.decryptSecret(secret, true);
+      const sec = await this.encryptService.decryptSecret(secret, true);
       secret.message = sec.message;
       res.status(200).send(secret);
-      Logger.debug(`deleteSecret sec.message - ${sec.message}`);
     } catch (e) {
       AController.processErrors(e, res);
     }
@@ -53,12 +52,12 @@ export class SecretController extends AController {
     const result = [];
 
     // list of normal characters
-    let characters =
+    const characters =
       "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const charactersLength = characters.length;
 
     // For loop to randomly select a random character from characters and add it to the result. You can change the length, (Default: 12)
-    for (var i = 0; i < 24; i++) {
+    for (let i = 0; i < 24; i++) {
       result.push(
         characters.charAt(Math.floor(Math.random() * charactersLength))
       );
@@ -73,8 +72,8 @@ export class SecretController extends AController {
     next: NextFunction
   ): Promise<void> => {
     // get msg to encrypt
-    let payload = req.body;
-    let secret = new Secret(
+    const payload = req.body;
+    const secret = new Secret(
       undefined,
       payload.message,
       undefined,

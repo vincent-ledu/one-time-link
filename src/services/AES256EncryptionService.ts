@@ -42,14 +42,13 @@ export class AES256EncryptService implements IEncryptService {
     unlink: boolean = true
   ): Promise<Secret> => {
     Logger.info(`Decrypting secret ${secret.id}`);
-    console.log(secret);
     if (fs.existsSync(path.join(this.baseDir, secret.id))) {
       secret.message = await this.decryptMessage(
         path.join(this.baseDir, secret.id),
         secret.password
       );
-      Logger.debug(`unlink: ${unlink}`);
       if (unlink) {
+        /* tslint:disable-next-line no-unused-expression */
         Logger.info(`deleting ${(path.join, secret.id)}`);
         fs.rm(
           path.join(this.baseDir, secret.id),
@@ -81,19 +80,13 @@ export class AES256EncryptService implements IEncryptService {
     const initVect = crypto.randomBytes(16);
 
     // Generate a cipher key from the password.
-    Logger.debug("getting cipher key");
     const CIPHER_KEY = this.getCipherKey(password);
-    Logger.debug("getting message");
     const message = Readable.from([text]);
-    Logger.debug("get gzip");
     const gzip = zlib.createGzip();
-    Logger.debug("create cipher iv");
     const cipher = crypto.createCipheriv("aes256", CIPHER_KEY, initVect);
-    Logger.debug("appending init vector");
     const appendInitVect = new AppendInitVect(initVect, undefined);
     // Create a write stream with a different file extension.
     if (!fs.existsSync(folder)) {
-      Logger.debug("Creating missing fs");
       fs.mkdirSync(folder, { recursive: true });
     }
     const writeStream = fs.createWriteStream(path.join(folder, "msg.enc"));
@@ -102,6 +95,7 @@ export class AES256EncryptService implements IEncryptService {
   decryptMessage = async (
     folder: string,
     password: string
+    /* tslint:disable-next-line */
   ): Promise<string> => {
     return new Promise((resolve, reject) => {
       Logger.info(`Decrypting message in folder ${folder}`);
@@ -131,7 +125,7 @@ export class AES256EncryptService implements IEncryptService {
         );
         readStream.pipe(decipher).pipe(unzip).pipe(writeStream);
         writeStream.on("finish", async () => {
-          let message = fs.readFileSync(path.join(folder, "msg.unenc"));
+          const message = fs.readFileSync(path.join(folder, "msg.unenc"));
           resolve(message.toString());
         });
         writeStream.on("error", reject);
