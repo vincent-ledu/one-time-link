@@ -8,6 +8,7 @@
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc",
     "postbuild": "npm test",
+    "pack": "tar --exclude='tests' --exclude='./tests' --exclude='./src' --exclude='./.git' --exclude='./one-time-link.tgz' -cvzf ../one-time-link.tgz  . && mv ../one-time-link.tgz .",
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
     "test:watch": "mocha -r ts-node/register src/**/*.spec.ts --watch",
     "test:cov": "nyc --reporter=text mocha -r ts-node/register src/**/*.spec.ts",
