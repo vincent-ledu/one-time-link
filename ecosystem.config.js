@@ -6,7 +6,7 @@ module.exports = {
       watch: ["dist"],
       env_production: {
         NODE_ENV: "PROD",
-        DATA_DIR: "/www/https.one-time-link.ledu.dev/data",
+        DATA_DIR: "/var/www/https.one-time-link.ledu.dev/data",
       },
       env_development: {
         NODE_ENV: "DEV",
