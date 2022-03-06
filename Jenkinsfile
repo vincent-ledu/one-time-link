@@ -10,10 +10,11 @@ node('nodejs17') {
   
   stage('Building') {
     sh label: 'Installing deps', script: 'npm ci --no-progress'
+    sh label: 'Building', script: 'npm run build'
   }
 
   stage('Tarring tarball') {
-    sh label: 'Making tarball', script: "cd .. && tar --exclude='.env.sample' -cvzf ${archive_file} ${JOB_BASE_NAME} && mv ${archive_file} ${JOB_BASE_NAME}"
+    sh label: 'Making tarball', script: "cd .. && tar --exclude='.env.sample,src' -cvzf ${archive_file} ${JOB_BASE_NAME} && mv ${archive_file} ${JOB_BASE_NAME}"
   }
   stage('Archiving') {
     archiveArtifacts artifacts: "${archive_file}", defaultExcludes: false, followSymlinks: false, onlyIfSuccessful: true

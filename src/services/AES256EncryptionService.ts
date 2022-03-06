@@ -8,8 +8,6 @@ import Logger from "../utils/logger";
 import { Secret } from "../domain/Secret";
 import { Readable, Writable } from "stream";
 import NotFound from "../domain/errors/NotFound";
-import { loggers } from "winston";
-import { resolve } from "path/posix";
 
 // See: https://medium.com/@brandonstilson/lets-encrypt-files-with-node-85037bea8c0e
 export class AES256EncryptService implements IEncryptService {
