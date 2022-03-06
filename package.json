@@ -12,7 +12,7 @@
     "test:watch": "mocha -r ts-node/register src/**/*.spec.ts --watch",
     "test:cov": "nyc --reporter=text mocha -r ts-node/register src/**/*.spec.ts",
     "start": "node dist/server.js",
-    "start:prod": "pm2 start --env production --watch"
+    "start:production": "pm2 start --env production --watch"
   },
   "author": "Vincent LE DÛ",
   "license": "ISC",
