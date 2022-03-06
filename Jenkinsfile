@@ -13,7 +13,7 @@ pipeline {
       }
     }
     stage('Deploy') {
-      agent { label: 'vprox'}
+      agent { label 'vprox'}
       steps {
         copyArtifacts(projectName: 'one-time-link');
         sh label: 'Untar', script: "rm -rf /tmp/one-time-link && mkdir /tmp/one-time-link/ && tar xvzf ${archive_file} -C /tmp/one-time-link"
