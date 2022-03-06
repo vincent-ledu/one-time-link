@@ -8,7 +8,8 @@ pipeline {
         checkout scm
         sh label: 'Installing deps', script: 'npm ci --no-progress'
         sh label: 'Building', script: 'npm run build'
-        sh label: 'Making tarball', script: "cd .. && tar --exclude='.env.sample,src' -cvzf ${archive_file} ${JOB_BASE_NAME} && mv ${archive_file} ${JOB_BASE_NAME}"
+        sh label: 'Delete non production folder', script: 'rm -rf tests src'
+        sh label: 'Making tarball', script: "cd .. && tar --exclude='.env.sample' --exclude='tests' --exclude='src' --exclude='.git' -cvzf ${archive_file} ${JOB_BASE_NAME} && mv ${archive_file} ${JOB_BASE_NAME}"
         archiveArtifacts artifacts: "${archive_file}", defaultExcludes: false, followSymlinks: false, onlyIfSuccessful: true
       }
     }
