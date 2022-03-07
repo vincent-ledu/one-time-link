@@ -11,9 +11,13 @@ describe("Testing encryption service", () => {
     const folder = "./tests/data/";
     const password = "toto";
     const encrypter = new AES256EncryptService(folder);
-    fs.writeFileSync(fileToEncrypt, "Hello", "utf8");
+    fs.writeFileSync(path.join(folder, fileToEncrypt), "Hello", "utf8");
 
-    await encrypter.encryptFile(folder, fileToEncrypt, password);
+    await encrypter.encryptFile(
+      folder,
+      path.join(folder, fileToEncrypt),
+      password
+    );
     expect(fs.existsSync(path.join(folder, fileToEncrypt + ".enc"))).to.be.true;
   });
 

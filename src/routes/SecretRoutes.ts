@@ -13,7 +13,7 @@ export class SecretRoute extends Routes {
   protected intializeRoutes(): void {
     this.router.post("/", this.secretController.createSecret);
     this.router.delete("/", this.secretController.deleteSecret);
-    this.router.get("/:id/:password", this.secretController.getSecret);
+    this.router.get("/:date/:id/:password", this.secretController.getSecret);
     this.router.get("/", this.secretController.home);
   }
 }

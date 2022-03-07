@@ -16,23 +16,14 @@ export class AES256EncryptService implements IEncryptService {
     this.baseDir = baseDir;
   }
   encryptSecret = async (secret: Secret): Promise<void> => {
-    Logger.info(
-      `Encrypting secret ${secret.id} in ${path.join(this.baseDir, secret.id)}`
-    );
+    const folder = path.join(this.baseDir, secret.date, secret.id);
+    Logger.info(`Encrypting secret ${secret.id} in ${folder}`);
 
     if (secret.message !== "") {
-      this.encryptMessage(
-        path.join(this.baseDir, secret.id),
-        secret.message,
-        secret.password
-      );
+      this.encryptMessage(folder, secret.message, secret.password);
     }
     if (secret.attachmentFilename !== undefined) {
-      this.encryptFile(
-        path.join(this.baseDir, secret.id),
-        secret.attachmentFilename,
-        secret.password
-      );
+      this.encryptFile(folder, secret.attachmentFilename, secret.password);
     }
   };
   decryptSecret = async (
@@ -40,27 +31,17 @@ export class AES256EncryptService implements IEncryptService {
     unlink: boolean = true
   ): Promise<Secret> => {
     Logger.info(`Decrypting secret ${secret.id}`);
-    if (fs.existsSync(path.join(this.baseDir, secret.id))) {
-      secret.message = await this.decryptMessage(
-        path.join(this.baseDir, secret.id),
-        secret.password
-      );
+    const folder = path.join(this.baseDir, secret.date, secret.id);
+    if (fs.existsSync(folder)) {
+      secret.message = await this.decryptMessage(folder, secret.password);
       if (unlink) {
         /* tslint:disable-next-line no-unused-expression */
-        Logger.info(`deleting ${(path.join, secret.id)}`);
-        fs.rm(
-          path.join(this.baseDir, secret.id),
-          { recursive: true, force: true },
-          (err) => {
-            if (err) {
-              Logger.error(
-                `Can't unlink folder ${path.join(this.baseDir, secret.id)} - ${
-                  err.message
-                }`
-              );
-            }
+        Logger.info(`deleting ${folder}`);
+        fs.rm(folder, { recursive: true, force: true }, (err) => {
+          if (err) {
+            Logger.error(`Can't unlink folder ${folder} - ${err.message}`);
           }
-        );
+        });
       }
       return secret;
     } else {
