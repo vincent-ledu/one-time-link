@@ -34,9 +34,10 @@ pipeline {
   post {
 
     always {
-		  agent { label 'pi4' } 
-    	sh 'docker logout'
-		}
+		  node('pi4') { 
+    	  sh 'docker logout'
+		  }
+    }
   }
 
 }
