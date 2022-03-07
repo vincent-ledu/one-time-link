@@ -24,9 +24,9 @@ pipeline {
     }
     stage('Publish dockerhub image') {
      	steps {
-				sh 'docker build -t vincent-ledu/one-time-link:latest .'
+				sh 'docker build -t vincentledu/one-time-link:latest .'
 				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-				sh 'docker push vincent-ledu/one-time-link:latest'
+				sh 'docker push vincentledu/one-time-link:latest'
 			}
 		}
   }
