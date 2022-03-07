@@ -23,6 +23,7 @@ pipeline {
       }
     }
     stage('Publish dockerhub image') {
+      agent { label 'pi4' } 
    		steps {
 				sh 'docker build -t vincent-ledu/one-time-link:latest .'
 				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
@@ -31,6 +32,8 @@ pipeline {
 		}
   }
   post {
+
+    agent { label 'pi4' } 
     always {
 			sh 'docker logout'
 		}
