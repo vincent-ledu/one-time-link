@@ -13,11 +13,7 @@ describe("Testing encryption service", () => {
     const encrypter = new AES256EncryptService(folder);
     fs.writeFileSync(path.join(folder, fileToEncrypt), "Hello", "utf8");
 
-    await encrypter.encryptFile(
-      folder,
-      path.join(folder, fileToEncrypt),
-      password
-    );
+    await encrypter.encryptFile(folder, fileToEncrypt, password);
     expect(fs.existsSync(path.join(folder, fileToEncrypt + ".enc"))).to.be.true;
   });
 
@@ -68,7 +64,8 @@ describe("Testing encryption service", () => {
       "a9133087-3a17-4f99-a50c-247e84ab66da",
       undefined,
       undefined,
-      "test"
+      "test",
+      "2022-03-07"
     );
     const encrypter = new AES256EncryptService(folder);
     const sec = await encrypter.decryptSecret(secret, false);

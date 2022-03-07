@@ -45,7 +45,7 @@ export class AES256EncryptService implements IEncryptService {
       }
       return secret;
     } else {
-      Logger.error(`Secret ${secret.id} in folder ${this.baseDir} not found`);
+      Logger.error(`Secret ${secret.id} in folder ${folder} not found`);
       throw new NotFound(`Secret ${secret.id} not found`);
     }
   };
