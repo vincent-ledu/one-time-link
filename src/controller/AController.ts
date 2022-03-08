@@ -1,4 +1,4 @@
-import { Response, Request, NextFunction } from "express";
+import { Response, Request } from "express";
 import NotFound from "../domain/errors/NotFound";
 import Logger from "../utils/logger";
 
@@ -12,12 +12,7 @@ export class AController {
       });
     }
   }
-  protected static handleError(
-    err: Error,
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): void {
+  protected static handleError(err: Error, req: Request, res: Response): void {
     res.render("pages/errorPage.ejs", { error: err });
   }
 }

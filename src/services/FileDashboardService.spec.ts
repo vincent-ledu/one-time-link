@@ -1,4 +1,3 @@
-import chai from "chai";
 import { FileDashboardService } from "./FileDashboardService";
 
 describe("Dashboard tests", () => {

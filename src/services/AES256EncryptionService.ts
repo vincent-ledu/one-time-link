@@ -6,7 +6,7 @@ import * as path from "path";
 import { AppendInitVect } from "../utils/AppendInitVector";
 import Logger from "../utils/logger";
 import { Secret } from "../domain/Secret";
-import { Readable, Writable } from "stream";
+import { Readable } from "stream";
 import NotFound from "../domain/errors/NotFound";
 
 // See: https://medium.com/@brandonstilson/lets-encrypt-files-with-node-85037bea8c0e
@@ -26,10 +26,7 @@ export class AES256EncryptService implements IEncryptService {
       this.encryptFile(folder, secret.attachmentFilename, secret.password);
     }
   };
-  decryptSecret = async (
-    secret: Secret,
-    unlink: boolean = true
-  ): Promise<Secret> => {
+  decryptSecret = async (secret: Secret, unlink = true): Promise<Secret> => {
     Logger.info(`Decrypting secret ${secret.id}`);
     const folder = path.join(this.baseDir, secret.date, secret.id);
     if (fs.existsSync(folder)) {

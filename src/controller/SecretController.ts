@@ -1,5 +1,4 @@
-import { NextFunction, Request, Response } from "express";
-import Logger from "../utils/logger";
+import { Request, Response } from "express";
 import { IEncryptService } from "../services/IEncryptService";
 import { AController } from "./AController";
 import { Secret } from "../domain/Secret";
@@ -12,11 +11,7 @@ export class SecretController extends AController {
     super();
     this.encryptService = encryptService;
   }
-  getSecret = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
+  getSecret = async (req: Request, res: Response): Promise<void> => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -30,14 +25,10 @@ export class SecretController extends AController {
         date: req.params.date,
       });
     } catch (e) {
-      AController.handleError(e, req, res, next);
+      AController.handleError(e, req, res);
     }
   };
-  deleteSecret = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
+  deleteSecret = async (req: Request, res: Response): Promise<void> => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -59,19 +50,11 @@ export class SecretController extends AController {
     }
   };
 
-  home = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
+  home = async (req: Request, res: Response): Promise<void> => {
     res.render("pages/createSecret");
   };
 
-  createSecret = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
+  createSecret = async (req: Request, res: Response): Promise<void> => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -93,11 +76,11 @@ export class SecretController extends AController {
         url: secret.date + "/" + secret.id + "/" + secret.password,
       });
     } catch (e) {
-      AController.handleError(e, req, res, next);
+      AController.handleError(e, req, res);
     }
   };
 
-  generatePwd(): string {
+  private generatePwd(): string {
     // Creating an empty array
     const result = [];
 

@@ -5,7 +5,6 @@ import Logger from "./utils/logger";
 import { SecretRoute } from "./routes/SecretRoutes";
 import { DashboardRoute } from "./routes/DashboardRoute";
 import { AES256EncryptService } from "./services/AES256EncryptionService";
-import { HomeController } from "./controller/HomeController";
 import { FileDashboardService } from "./services/FileDashboardService";
 import { HomeRoute } from "./routes/HomeRoute";
 
