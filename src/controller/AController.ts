@@ -13,6 +13,7 @@ export class AController {
     }
   }
   protected static handleError(err: Error, req: Request, res: Response): void {
-    res.render("pages/errorPage.ejs", { error: err });
+    Logger.error(JSON.stringify(err));
+    res.render("pages/errorPage.ejs", { error: JSON.stringify(err) });
   }
 }

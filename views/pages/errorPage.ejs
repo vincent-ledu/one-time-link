@@ -12,7 +12,7 @@
       </div>
       <div class="form-group" id="errMessage-div" name="errMessage-div">
         <label id="errMessage" class="alert alert-danger"
-          ><%= error.message %></label
+          ><%- JSON.stringify(error) %></label
         >
       </div>
     </main>
