@@ -3,9 +3,11 @@ import morgan from "morgan";
 import "dotenv/config";
 import Logger from "./utils/logger";
 import { SecretRoute } from "./routes/SecretRoutes";
-import { HomeRoute } from "./routes/HomeRoute";
+import { DashboardRoute } from "./routes/DashboardRoute";
 import { AES256EncryptService } from "./services/AES256EncryptionService";
 import { HomeController } from "./controller/HomeController";
+import { FileDashboardService } from "./services/FileDashboardService";
+import { HomeRoute } from "./routes/HomeRoute";
 
 const app = express();
 app.set("view engine", "ejs");
@@ -17,8 +19,12 @@ app.use(express.urlencoded());
 const encryptService = new AES256EncryptService(process.env.DATA_DIR);
 const secretRoute = new SecretRoute(encryptService);
 const homeRoute = new HomeRoute();
-app.use("/secret", secretRoute.router);
+const dashboardRoute = new DashboardRoute(
+  new FileDashboardService(process.env.DATA_DIR)
+);
 app.use("/", homeRoute.router);
+app.use("/secret", secretRoute.router);
+app.use("/dashBoard", dashboardRoute.router);
 
 Logger.info(`Loading ${process.env.NODE_ENV} configuration`);
 

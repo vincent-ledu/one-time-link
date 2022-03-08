@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Response, Request, NextFunction } from "express";
 import NotFound from "../domain/errors/NotFound";
 import Logger from "../utils/logger";
 
@@ -11,5 +11,13 @@ export class AController {
         message: e.message || "Resource not found",
       });
     }
+  }
+  protected static handleError(
+    err: Error,
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): void {
+    res.render("pages/errorPage.ejs", { error: err });
   }
 }

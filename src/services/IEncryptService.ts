@@ -1,5 +1,4 @@
 import { Secret } from "../domain/Secret";
-import { SecretRoute } from "../routes/SecretRoutes";
 
 export interface IEncryptService {
   getCipherKey(password: string): Buffer;

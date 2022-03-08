@@ -18,7 +18,7 @@ pipeline {
     stage('Deploy') {
       steps {
         sh label: 'Untar', script: "rm -rf /tmp/one-time-link && mkdir /tmp/one-time-link/ && tar xvzf ${archive_file} -C /tmp/one-time-link"
-        sh label: 'Deploy', script: "sudo sh -c \"rm -rf /var/www/https.one-time-link.ledu.dev/ && mkdir /var/www/https.one-time-link.ledu.dev/ && mv /tmp/one-time-link/* /var/www/https.one-time-link.ledu.dev/ && chown -R www-data:www-data /var/www/https.one-time-link.ledu.dev\""     
+        sh label: 'Deploy', script: "sudo sh -c \"mv /tmp/one-time-link/* /var/www/https.one-time-link.ledu.dev/ && chown -R www-data:www-data /var/www/https.one-time-link.ledu.dev\""
         sh label: 'Start application', script: "cd /var/www/https.one-time-link.ledu.dev && sudo -u www-data npm run start:production"
       }
     }

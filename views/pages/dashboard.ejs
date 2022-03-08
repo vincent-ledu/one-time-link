@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!-- https://www.digitalocean.com/community/tutorials/how-to-use-ejs-to-template-your-node-application -->
+<html lang="en">
+  <head>
+    <%- include('../partials/head'); %>
+  </head>
+  <body class="container">
+    <header><%- include('../partials/header'); %></header>
+
+    <main>
+      <div class="jumbotron">
+        <h1>Dashboard</h1>
+      </div>
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th>date of creation</th>
+              <th>id</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= for (let i = 0; i < secrets.length; i++) { %>
+            <tr>
+              <td><%= secrets[i].date %></td>
+              <td><%= secrets[i].id %></td>
+            </tr>
+            <%= } %>
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <footer><%- include('../partials/footer'); %></footer>
+  </body>
+</html>
