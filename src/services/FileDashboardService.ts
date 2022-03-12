@@ -10,27 +10,23 @@ export class FileDashboardService implements IDashboardService {
     this.baseDir = baseDir;
   }
   getSecrets = async (): Promise<Secret[]> => {
-    const secrets: Secret[] | Promise<Secret[]> = [];
-    Logger.debug(`getSecrets: ${this.baseDir}`);
-    fs.readdir(this.baseDir, (err, dateDirs) => {
-      if (err) {
-        Logger.error(err);
-        throw err;
-      }
-      dateDirs.forEach((dateDir) => {
-        if (
-          fs.lstatSync(path.join(this.baseDir, dateDir)).isDirectory() &&
-          String(dateDirs).match(/\d{4}-\d{2}-\d{2}/) !== null
-        ) {
-          Logger.debug(
-            `fileDashboardService - getSecrets - dateDir ${dateDir}`
-          );
-          fs.readdir(path.join(this.baseDir, dateDir), (err, idDirs) => {
-            if (err) {
-              Logger.error(err);
-              throw err;
-            }
-            idDirs.forEach((idDir) => {
+    return new Promise((resolve, reject) => {
+      Logger.debug(`getSecrets: ${this.baseDir}`);
+      try {
+        const dateDirs = fs.readdirSync(this.baseDir);
+        const secrets = [];
+        for (let i = 0; i < dateDirs.length; i += 1) {
+          const dateDir = dateDirs[i];
+          if (
+            fs.lstatSync(path.join(this.baseDir, dateDir)).isDirectory() &&
+            String(dateDir).match(/\d{4}-\d{2}-\d{2}/) !== null
+          ) {
+            Logger.debug(
+              `fileDashboardService - getSecrets - dateDir ${dateDir}`
+            );
+            const idDirs = fs.readdirSync(path.join(this.baseDir, dateDir));
+            for (let j = 0; j < idDirs.length; j += 1) {
+              const idDir = idDirs[j];
               if (
                 fs.lstatSync(path.join(this.baseDir, dateDir, idDir)) &&
                 String(idDir).match(
@@ -47,11 +43,13 @@ export class FileDashboardService implements IDashboardService {
                 Logger.debug(`adding ${JSON.stringify(sec)}`);
                 secrets.push(sec);
               }
-            });
-          });
+            }
+          }
         }
-      });
+        resolve(secrets);
+      } catch (e) {
+        reject(e);
+      }
     });
-    return secrets;
   };
 }
