@@ -9,7 +9,7 @@ describe("Testing encryption service", () => {
   it("should encrypt secret", async () => {
     const folder = "./tests/data/";
     const secret = new Secret(
-      "04e35381-835e-4958-b23b-eb1c8e47b634",
+      "a9133087-3a17-4f99-a50c-247e84ab66da",
       "test",
       undefined,
       "test",
