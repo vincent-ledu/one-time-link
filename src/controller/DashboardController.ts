@@ -10,7 +10,13 @@ export class DashboardController extends AController {
   }
 
   dashboard = async (req: Request, res: Response): Promise<void> => {
-    const secrets = await this.dashboardService.getSecrets();
-    res.render("pages/dashboard", { secrets: secrets });
+    this.dashboardService
+      .getSecrets()
+      .then((secrets) => {
+        res.render("pages/dashboard", { secrets: secrets });
+      })
+      .catch((error) => {
+        res.status(500).send(error.message);
+      });
   };
 }

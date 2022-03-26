@@ -48,6 +48,7 @@ export class FileDashboardService implements IDashboardService {
         }
         resolve(secrets);
       } catch (e) {
+        Logger.error(e);
         reject(e);
       }
     });
