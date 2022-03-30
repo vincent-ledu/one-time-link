@@ -15,7 +15,7 @@
     "test:cov": "cross-env NODE_ENV=TEST nyc --reporter=text mocha -r ts-node/register src/**/*.spec.ts",
     "start": "cross-env NODE_ENV=DEV node dist/app.js",
     "start:production": "cross-env NODE_ENV=PROD pm2 start --env production --watch",
-    "stop:production": "cross-env NODE_ENV=PROD pm2 stop one-time-link"
+    "stop:production": "cross-env NODE_ENV=PROD pm2 kill || echo 'no pm2 started'"
   },
   "author": "Vincent LE DÛ",
   "license": "ISC",
