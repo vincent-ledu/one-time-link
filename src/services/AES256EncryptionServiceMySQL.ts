@@ -6,12 +6,10 @@ import { AppendInitVect } from "../utils/AppendInitVector";
 import Logger from "../utils/logger";
 import { Secret } from "../domain/Secret";
 import { Readable } from "stream";
-import NotFound from "../domain/errors/NotFound";
 import { BufferStream } from "../utils/BufferStream";
 import { Knex } from "knex";
 import path from "path";
 import os from "os";
-import { NOTIMP } from "dns";
 
 function tmpFile(prefix: string, suffix: string, tmpdir: string) {
   prefix = typeof prefix !== "undefined" ? prefix : "tmp.";
@@ -38,7 +36,7 @@ export class AES256EncryptServiceMySQL implements IEncryptService {
       this.encryptMessage(secret.id, secret.message, secret.password);
     }
   };
-  decryptSecret = async (secret: Secret, unlink = true): Promise<Secret> => {
+  decryptSecret = async (secret: Secret): Promise<Secret> => {
     Logger.info(`Decrypting secret ${secret.id}`);
     secret.message = await this.decryptMessage(secret.id, secret.password);
     return secret;
@@ -125,7 +123,7 @@ export class AES256EncryptServiceMySQL implements IEncryptService {
                   })
                   .catch((err) => {
                     Logger.error(
-                      `Error while trying to delete record ${id} after decrypt.`
+                      `Error while trying to delete record ${id} after decrypt. Error: ${err.message}`
                     );
                   });
               });

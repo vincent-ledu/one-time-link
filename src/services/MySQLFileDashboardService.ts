@@ -1,6 +1,4 @@
-import * as fs from "fs";
 import { Knex } from "knex";
-import * as path from "path";
 import { Secret } from "../domain/Secret";
 import Logger from "../utils/logger";
 import { IDashboardService } from "./IDashboardService";

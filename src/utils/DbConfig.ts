@@ -1,5 +1,3 @@
-import Logger from "./logger";
-
 import "dotenv/config";
 
 export enum DbType {

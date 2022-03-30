@@ -1,9 +1,7 @@
 import { expect } from "chai";
-import knex from "knex";
 import { Secret } from "../domain/Secret";
 import dbConfig from "../utils/DbConfig";
 import KnexInitializer from "../utils/KnexInitializer";
-import Logger from "../utils/logger";
 import { AES256EncryptServiceMySQL } from "./AES256EncryptionServiceMySQL";
 
 /* tslint:disable no-unused-expression */
