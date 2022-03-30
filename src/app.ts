@@ -11,6 +11,8 @@ import KnexInitializer from "./utils/KnexInitializer";
 import dbConfig, { DbType } from "./utils/DbConfig";
 import { IEncryptService } from "./services/IEncryptService";
 import { AES256EncryptServiceMySQL } from "./services/AES256EncryptionServiceMySQL";
+import { IDashboardService } from "./services/IDashboardService";
+import { MySQLDashboardService } from "./services/MySQLFileDashboardService";
 
 export interface App {
   stop: () => Promise<void>;
@@ -35,17 +37,18 @@ export async function startApp(): Promise<App> {
   const knexInitializer = new KnexInitializer(databaseConfig);
   const knex = knexInitializer.getKnexInstance();
   let encryptService: IEncryptService;
+  let dashboardService: IDashboardService;
   if (databaseConfig.dbType !== DbType.IN_MEMORY && knex !== undefined) {
-    encryptService = new AES256EncryptServiceMySQL(knex);
     await knexInitializer.migrate();
+    encryptService = new AES256EncryptServiceMySQL(knex);
+    dashboardService = new MySQLDashboardService(knex);
   } else {
     encryptService = new AES256EncryptServiceFile(process.env.DATA_DIR);
+    dashboardService = new FileDashboardService(process.env.DATA_DIR);
   }
+  const dashboardRoute = new DashboardRoute(dashboardService);
   const secretRoute = new SecretRoute(encryptService);
   const homeRoute = new HomeRoute();
-  const dashboardRoute = new DashboardRoute(
-    new FileDashboardService(process.env.DATA_DIR)
-  );
   app.use("/", homeRoute.router);
   app.use("/secret", secretRoute.router);
   app.use("/dashBoard", dashboardRoute.router);
