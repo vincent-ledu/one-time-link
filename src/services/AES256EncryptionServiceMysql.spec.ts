@@ -33,7 +33,7 @@ describe.skip("Testing encryption service", () => {
     const encrypter = new AES256EncryptServiceMySQL(
       knexInitializer.getKnexInstance()
     );
-    const sec = await encrypter.decryptSecret(secret, false);
+    const sec = await encrypter.decryptSecret(secret);
     expect(sec.message).to.be.equals("test");
   });
 });
