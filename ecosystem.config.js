@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "one-time-link",
-      script: "./dist/server.js",
+      script: "./dist/app.js",
       watch: ["dist"],
       env_production: {
         NODE_ENV: "PROD",
