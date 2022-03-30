@@ -17,7 +17,7 @@ pipeline {
     }
     stage('Deploy') {
       steps {
-        sh label: 'Stop application', script: "cd /var/www/https.one-time-link.ledu.dev && sudo -u www-data npm run stop one-time-link"
+        sh label: 'Stop application', script: "cd /var/www/https.one-time-link.ledu.dev && sudo -u www-data npm run stop:production"
         sh label: 'Untar', script: "rm -rf /tmp/one-time-link && mkdir /tmp/one-time-link/ && tar xzf ${archive_file} -C /tmp/one-time-link"
         sh label: 'Deploy', script: "sudo sh -c \"cp -r /tmp/one-time-link/* /var/www/https.one-time-link.ledu.dev/ && rm -rf /tmp/one-time-link && chown -R www-data:www-data /var/www/https.one-time-link.ledu.dev\""
         sh label: 'Start application', script: "cd /var/www/https.one-time-link.ledu.dev && sudo -u www-data npm run start:production"
