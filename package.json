@@ -7,7 +7,7 @@
     "dev": "cross-env NODE_ENV=DEV ts-node-dev --respawn --pretty --transpile-only src/app.ts",
     "prebuild": "eslint . --ext .ts --fix",
     "build": "tsc",
-    "dockerbuild": "docker build . vincentledu/one-time-link",
+    "dockerbuild": "tsc",
     "postbuild": "npm test",
     "pack": "tar --exclude='tests' --exclude='./tests' --exclude='./src' --exclude='./.git' --exclude='./one-time-link.tgz' -czf ../one-time-link.tgz  . && mv ../one-time-link.tgz .",
     "test": "cross-env NODE_ENV=TEST mocha -r ts-node/register src/**/*.spec.ts",
