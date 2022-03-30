@@ -10,7 +10,7 @@ import { Readable } from "stream";
 import NotFound from "../domain/errors/NotFound";
 
 // See: https://medium.com/@brandonstilson/lets-encrypt-files-with-node-85037bea8c0e
-export class AES256EncryptService implements IEncryptService {
+export class AES256EncryptServiceFile implements IEncryptService {
   baseDir: string;
   constructor(baseDir: string) {
     this.baseDir = baseDir;

@@ -1,0 +1,27 @@
+# Use root/example as user/password credentials
+version: "3.1"
+
+services:
+  db:
+    image: mariadb:10.7
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysqldata:/var/lib/mysql
+    environment:
+      MARIADB_USER: one-time-link-user
+      MARIADB_PASSWORD: pwd
+      MARIADB_DATABASE: one-time-link-db
+      MARIADB_ROOT_PASSWORD: mariadb-r00t-pwd
+      MARIADB_MYSQL_LOCALHOST_USER: 1
+      MARIADB_MYSQL_LOCALHOST_GRANT: SELECT, INSERT, UPDATE, DELETE, ALTER, CREATE
+  onetimelink:
+    image: vincentledu/one-time-link
+    restart: always
+    ports:
+      - 3000:3000
+
+volumes:
+  mysqldata:
+    driver: local
