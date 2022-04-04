@@ -1,0 +1,20 @@
+{
+  "nav_title": "Secrets Tools",
+  "nav_create_secret": "Create secret",
+  "nav_create_keepass": "Create KeePass",
+
+  "kp_h1": "Keepass Generator",
+  "kp_subtitle": "Transform CSV data to KeePass",
+  "kp_textarea_placeholder": "Copy/Paste csv content here.",
+
+  "ots_h1": "Create and share a secret that will be visible only one time",
+  "ots_message": "Message to share",
+  "ots_secret": "Secret",
+  "ots_get_delete_secret": "Get and delete secret",
+  "ots_secret_created": "Secret created!",
+  "ots_link_to_share": "Link to share your secret only one time :",
+
+  "date_of_creation": "date of creation",
+  "dashboard": "Dashboard",
+  "submit": "Submit"
+}

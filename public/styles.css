@@ -1,3 +1,20 @@
 .jumbotron {
-  background: rgb(75, 75, 255);
+  background-color: rgb(236, 236, 236) !important;
+}
+header {
+  background: rgb(61, 2, 95);
+}
+body {
+  padding-top: 0px;
+}
+.login_oueter {
+  width: 360px;
+  max-width: 100%;
+}
+.logo_outer {
+  text-align: center;
+}
+.logo_outer img {
+  width: 120px;
+  margin-bottom: 40px;
 }

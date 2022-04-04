@@ -1,8 +1,17 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/">One Time Secret</a>
-  <ul class="navbar-nav mr-auto">
-    <li class="nav-item">
-      <a class="nav-link" href="/secret">Create secret</a>
+<nav class="navbar navbar-expand-lg navbar-light">
+  <a class="navbar-brand text-light link-light" href="/"
+    ><%= __("nav_title") %></a
+  >
+  <ul class="navbar-nav mr-auto text-light link-light">
+    <li class="nav-item text-light link-light">
+      <a class="nav-link text-light link-light" href="/secret"
+        ><%= __("nav_create_secret") %></a
+      >
+    </li>
+    <li>
+      <a class="nav-link text-light link-light" href="/vault"
+        ><%= __("nav_create_keepass") %></a
+      >
     </li>
   </ul>
 </nav>

@@ -2,7 +2,10 @@
 
 ## Description
 
-Simple project to share a message with someone, via link, and delete the content once viewed.
+Simple project to:
+
+- share a message with someone, via link, and delete the content once viewed.
+- create KeePass from copy paste
 
 ## Key features
 

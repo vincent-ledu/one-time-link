@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!-- https://www.digitalocean.com/community/tutorials/how-to-use-ejs-to-template-your-node-application -->
+<html lang="en">
+  <head>
+    <%- include('../partials/head'); %>
+  </head>
+  <body class="container">
+    <header><%- include('../partials/header'); %></header>
+
+    <main>
+      <div class="jumbotron">
+        <h1><%= __("kp_h1") %></h1>
+        <p><%= __("kp_subtitle") %></p>
+        <!-- <form method="post" action="/kdbx"> -->
+        <form onsubmit="return false">
+          <div class="form-group">
+            <div class="input-group mb-3">
+              <textarea
+                class="form-control"
+                name="csv"
+                id="csv"
+                placeholder="<%= __('kp_textarea_placeholder') %>"
+                rows="12"
+              ></textarea>
+            </div>
+            <div class="input-group mb-3">
+              <button class="btn btn-success" onclick="createVault()">
+                <%= __("submit") %>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <footer><%- include('../partials/footer'); %></footer>
+  </body>
+  <script type="text/javascript">
+    function createVault() {
+      $.ajax({
+        method: "POST",
+        contentType: "application/x-www-form-urlencoded",
+        data: `csv=${document.getElementById("csv").value}`,
+        url: "/vault",
+        success: (res) => {
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          const filename = "vault.kdbx";
+          a.style = "none";
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error: (xmlHttpRequest, textStatus, errorThrown) => {
+          console.log("Error creating vault");
+        },
+      });
+    }
+  </script>
+</html>
