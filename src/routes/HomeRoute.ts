@@ -10,5 +10,6 @@ export class HomeRoute extends Routes {
   }
   protected intializeRoutes(): void {
     this.router.get("/", this.homeController.home);
+    this.router.get("/devZone", this.homeController.devZone);
   }
 }

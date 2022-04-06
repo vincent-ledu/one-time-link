@@ -3,6 +3,7 @@ import { IEncryptService } from "../services/IEncryptService";
 import { AController } from "./AController";
 import { Secret } from "../domain/Secret";
 import { validationResult } from "express-validator";
+import Logger from "../utils/logger";
 
 export class SecretController extends AController {
   encryptService: IEncryptService;
@@ -68,14 +69,27 @@ export class SecretController extends AController {
         this.generatePwd()
       );
       await this.encryptService.encryptSecret(secret);
-      res.render("pages/secretCreated", {
-        error: undefined,
-        id: secret.id,
-        password: secret.password,
-        date: secret.date,
-        url: secret.date + "/" + secret.id + "/" + secret.password,
-      });
+      if (req.baseUrl.startsWith("/api/")) {
+        res.setHeader("Content-Type", "application/json");
+        res.status(201).send({
+          linkToShare: `${req.protocol}://${req.get("Host")}/${secret.date}/${
+            secret.id
+          }/${secret.password}`,
+          id: secret.id,
+          date: secret.date,
+          password: secret.password,
+        });
+      } else {
+        res.render("pages/secretCreated", {
+          error: undefined,
+          id: secret.id,
+          password: secret.password,
+          date: secret.date,
+          url: secret.date + "/" + secret.id + "/" + secret.password,
+        });
+      }
     } catch (e) {
+      Logger.error(e.stack);
       AController.handleError(e, req, res);
     }
   };

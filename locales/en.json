@@ -2,6 +2,7 @@
   "nav_title": "Secrets Tools",
   "nav_create_secret": "Create secret",
   "nav_create_keepass": "Create KeePass",
+  "nav_dev_zone": "Dev Zone",
 
   "kp_h1": "Keepass Generator",
   "kp_subtitle": "Transform CSV data to KeePass",
@@ -17,6 +18,11 @@
   "otl_secret_created": "Secret created!",
   "otl_link_to_share": "Link to share your secret only one time :",
 
+  "date_of_creation": "Created at",
+  "secrets_tools": "Secrets tools",
+  "Dev Zone": "Dev Zone",
+  "Secrets": "Secrets",
+  "Keepass": "Keepass",
   "counter": "Counter",
   "value": "Value",
   "creation_at": "Created at",

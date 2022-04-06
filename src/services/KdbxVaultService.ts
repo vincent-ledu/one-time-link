@@ -13,7 +13,7 @@ export class KdbxVaultService implements IVaultService {
     this.knex = knex;
   }
 
-  upCounter = async (counterName: string): Promise<void> => {
+  upCounter = async (counterName: string, inc?: number): Promise<void> => {
     if (this.knex) {
       const total = await this.knex(this.counterTable)
         .where("counterName", "=", counterName)
@@ -25,7 +25,7 @@ export class KdbxVaultService implements IVaultService {
       }
       this.knex(this.counterTable)
         .where("counterName", "=", counterName)
-        .increment("counter", 1)
+        .increment("counter", inc ? inc : 1)
         .catch((reason) => {
           Logger.error("Counter increment error");
           Logger.error(reason);
@@ -40,12 +40,12 @@ export class KdbxVaultService implements IVaultService {
   ): Promise<kdbxweb.Kdbx> => {
     const credentials = new kdbxweb.KdbxCredentials(password);
     const db = kdbxweb.Kdbx.create(credentials, vaultName);
+    this.upCounter("KeepassEntries", jsonObj.length);
     jsonObj.forEach((row) => {
       const groupKeys = Object.keys(row).filter((key) =>
         ["GROUP", "GROUPE", "GRP", "ADABO"].includes(key.toUpperCase())
       );
       let group = db.getDefaultGroup();
-      let entry;
       if (groupKeys.length > 0) {
         for (let i = 0; i < groupKeys.length; i += 1) {
           const groupFound = group.groups.filter(
@@ -57,10 +57,8 @@ export class KdbxVaultService implements IVaultService {
             group = groupFound[0];
           }
         }
-        entry = db.createEntry(group);
-      } else {
-        entry = db.createEntry(group);
       }
+      const entry = db.createEntry(group);
       for (const [key, value] of Object.entries(row)) {
         if (
           ["PASSWORD", "MOT DE PASSE", "PASSE", "PASS", "PWD", "MDP"].includes(

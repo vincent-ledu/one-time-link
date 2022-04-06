@@ -2,6 +2,7 @@
   "nav_title": "Secrets Tools",
   "nav_create_secret": "Créer un secret",
   "nav_create_keepass": "Créer un KeePass",
+  "nav_dev_zone": "Dev Zone",
   "kp_h1": "Générateur de KeePass",
   "kp_subtitle": "Transformer les données CSV en KeePass",
   "kp_textarea_placeholder": "Coller les données depuis excel ici.",
@@ -17,9 +18,12 @@
   "submit": "Envoyer",
   "date_of_creation": "date de creation",
   "dashboard": "Tableau de bord",
-  "secrets_tools": "secrets_tools",
+  "secrets_tools": "Outils de secrets",
   "counter": "Compteur",
   "value": "Valeur",
   "creation_at": "Créé le",
-  "updated_at": "Mis à jour le"
+  "updated_at": "Mis à jour le",
+  "Dev Zone": "Dev Zone",
+  "Secrets": "Secrets",
+  "Keepass": "Keepass"
 }

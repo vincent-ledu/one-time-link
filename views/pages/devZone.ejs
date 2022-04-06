@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<!-- https://www.digitalocean.com/community/tutorials/how-to-use-ejs-to-template-your-node-application -->
+<html lang="en">
+  <head>
+    <%- include('../partials/head'); %>
+  </head>
+  <body class="container" onload="hljs.highlightAll()">
+    <header><%- include('../partials/header'); %></header>
+
+    <main>
+      <div class="jumbotron">
+        <h1><%= __("Dev Zone") %></h1>
+        <h2><%= __("Secrets") %></h2>
+        <h3>To record a secret:</h3>
+        <pre>
+          <code class="language-bash hljs">
+curl -H 'Content-Type: application/json' -XPOST -d'{"message": "test"}' <%= endpoint %>/api/secret
+# Expected output: 
+#{
+#  "linkToShare":"<%= endpoint %>/2022-04-06/e0ba512f-83f5-461d-8f9a-da61dcbc21f4/dX0tw77dborrXlu8Z3N9mJEt",
+#  "id":"e0ba512f-83f5-461d-8f9a-da61dcbc21f4",
+#  "date":"2022-04-06",
+#  "password":"dX0tw77dborrXlu8Z3N9mJEt"
+#} 
+          </code>
+        </pre>
+        <h3>To decrypt and delete a secret:</h3>
+        <pre>
+          <code class="language-bash hljs">
+curl -v -H 'Content-Type: application/json' -XDELETE -d'{\
+  "id":"e0ba512f-83f5-461d-8f9a-da61dcbc21f4",\
+  "date":"2022-04-06",\
+  "password":"dX0tw77dborrXlu8Z3N9mJEt"}'\
+  <%= endpoint %>/api/secret
+# Expected output: 
+#{
+#  "id":"6f182466-a983-4a46-ab59-5f4e697ef72e",
+#  "message":"test",
+#  "password":"TG2KQGN7EgZcy80Z4ze0gkDH",
+#  "date":"2022-04-06"
+#}
+          </code>
+        </pre>
+        <h2><%= __("Keepass") %></h2>
+        <h3>Password generator:</h3>
+        <pre>
+          <code>
+curl -H 'Content-Type: application/json' -XGET <% endpoint %>/api/vault/password\?len\=20\&numbers\=true\&symbols\=true\&strict\=true
+# Expected output: 8Elw=$6oe-fh1d0)L_nz
+          </code>
+        </pre>
+        <p>
+          Parameters:
+          <li>len: Password length. Default=20</li>
+          <li>numbers: Use numbers in password. Default=true</li>
+          <li>symbols: Use symbols in password. Default=true</li>
+          <li>Strict: Password must use numbers and symbols. Default=true</li>
+        </p>
+        <h3>Create Keepass:</h3>
+        <pre>
+          <code>
+curl -H 'Content-Type: application/json' -XPOST -d'{\
+  "projectName": "my project name",\
+  "password": "8Elw=$6oe-fh1d0)L_nz",
+  "data": [{"column1": "c1", "column2": "c2"}] }' <% endpoint %>/api/vault \
+  --output vault.kdbx
+          </code>
+        </pre>
+        <p>
+          Special column names (case insensitive):
+          <li>
+            login, username, user, utilisateur: record data to the KeePass
+            'UserName' field.
+          </li>
+          <li>group, groupe, grp: Create groups and subgroup entry.</li>
+          <li>
+            password, mot de passe, passe, pass, pwd, mdp: Record data to the
+            KeePass 'password' field.
+          </li>
+          <li>
+            title, titre, libelle, description: Record data to the KeePass
+            'title' field.
+          </li>
+        </p>
+      </div>
+    </main>
+
+    <footer><%- include('../partials/footer'); %></footer>
+  </body>
+</html>

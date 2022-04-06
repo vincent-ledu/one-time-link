@@ -49,10 +49,12 @@
   </body>
   <script type="text/javascript">
     function createVault() {
-      const projectName = btoa(
-        escape(document.getElementById("projectName").value)
-      );
-      const password = btoa(escape(document.getElementById("password").value));
+      // const projectName = btoa(
+      //   escape(document.getElementById("projectName").value)
+      // );
+      // const password = btoa(escape(document.getElementById("password").value));
+      const projectName = document.getElementById("projectName").value;
+      const password = document.getElementById("password").value;
       const csv = btoa(escape(document.getElementById("csv").value));
       const data = `{ "csv":"${csv}","password":"${password}","projectName":"${projectName}"}`;
 

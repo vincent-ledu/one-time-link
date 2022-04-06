@@ -5,7 +5,14 @@ export class HomeController extends AController {
   constructor() {
     super();
   }
-  home = async (req: Request, res: Response): Promise<void> => {
+  home = (req: Request, res: Response): void => {
     res.status(200).render("pages/createSecret");
+  };
+  devZone = (req: Request, res: Response): void => {
+    res
+      .status(200)
+      .render("pages/devZone", {
+        endpoint: `${req.protocol}://${req.get("Host")}`,
+      });
   };
 }

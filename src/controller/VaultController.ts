@@ -19,12 +19,11 @@ export class VaultController extends AController {
 
   generatePassword = (req: Request, res: Response): Promise<void> => {
     const pwd = generator.generate({
-      length: 20,
-      numbers: true,
-      symbols: true,
-      strict: true,
+      length: req.query.len ? parseInt(req.query.len.toString()) : 20,
+      numbers: req.query.numbers ? Boolean(req.query.numbers) : true,
+      symbols: req.query.symbols ? Boolean(req.query.symbols) : true,
+      strict: req.query.strict ? Boolean(req.query.strict) : true,
     });
-    Logger.debug(pwd);
     res.status(200).send(pwd);
     return;
   };
@@ -37,12 +36,14 @@ export class VaultController extends AController {
       }
       let jsonObj;
       Logger.debug(req.body);
-      const password = unescape(
-        Buffer.from(req.body.password, "base64").toString()
-      );
-      const projectName = unescape(
-        Buffer.from(req.body.projectName, "base64").toString()
-      );
+      // const password = unescape(
+      //   Buffer.from(req.body.password, "base64").toString()
+      // );
+      // const projectName = unescape(
+      //   Buffer.from(req.body.projectName, "base64").toString()
+      // );
+      const password = req.body.password;
+      const projectName = req.body.projectName;
 
       if (req.body.csv) {
         const csvdata = unescape(
@@ -54,14 +55,10 @@ export class VaultController extends AController {
       } else if (req.body.data) {
         jsonObj = req.body.data;
       }
-      Logger.debug(`projectName: ${projectName}`);
-      Logger.debug(`password: ${password}`);
-      Logger.debug(`jsonObj: ${jsonObj}`);
       if (!jsonObj) {
         res.status(400);
         return;
       }
-      Logger.debug(`pwd: ${password}`);
       const db = await this.vaultService.createVault(
         jsonObj,
         ProtectedValue.fromString(password),

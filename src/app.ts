@@ -71,6 +71,8 @@ export async function startApp(): Promise<App> {
   app.use("/", homeRoute.router);
   app.use("/secret", secretRoute.router);
   app.use("/vault", vaultRoute.router);
+  app.use("/api/secret", secretRoute.router);
+  app.use("/api/vault", vaultRoute.router);
   //#endregion
   Logger.info(`Loading ${process.env.NODE_ENV} configuration`);
   const PORT = process.env.SERVER_PORT
