@@ -1,5 +1,6 @@
 import * as kdbxweb from "kdbxweb";
 import * as argon2 from "../utils/argon2";
+import Logger from "../utils/logger";
 import { IVaultService } from "./IVaultService";
 
 export class KdbxVaultService implements IVaultService {
@@ -26,22 +27,26 @@ export class KdbxVaultService implements IVaultService {
       const groupKeys = Object.keys(row).filter((key) =>
         ["GROUP", "GROUPE", "GRP", "ADABO"].includes(key.toUpperCase())
       );
+      Logger.debug(`groupKeys: ${groupKeys}`);
       let group = db.getDefaultGroup();
       let entry;
       if (groupKeys.length > 0) {
         for (let i = 0; i < groupKeys.length; i += 1) {
-          const groupFound = this.searchGroupByName(db, row[groupKeys[i]]);
-          if (!groupFound) {
+          const groupFound = group.groups.filter(
+            (g) => g.name === row[groupKeys[i]]
+          );
+          if (!groupFound || groupFound.length == 0) {
             group = db.createGroup(group, row[groupKeys[i]]);
           } else {
-            group = groupFound;
-          }
-          if (i === groupKeys.length - 1) {
-            entry = db.createEntry(group);
+            group = groupFound[0];
           }
         }
+        entry = db.createEntry(group);
       } else {
         entry = db.createEntry(group);
+        Logger.debug(
+          `creating entry in ${group.name} from ${group.parentGroup.name}`
+        );
       }
       for (const [key, value] of Object.entries(row)) {
         if (
@@ -68,7 +73,7 @@ export class KdbxVaultService implements IVaultService {
             key.toUpperCase()
           )
         ) {
-          entry.fields.set("Username", String(value));
+          entry.fields.set("UserName", String(value));
         } else {
           entry.fields.set(key, String(value));
         }

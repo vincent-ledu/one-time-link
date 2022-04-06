@@ -6,8 +6,6 @@ import generator from "generate-password";
 import Logger from "../utils/logger";
 import csv from "csvtojson";
 import { ProtectedValue } from "kdbxweb";
-import { Readable } from "stream";
-import fs from "fs";
 
 export class VaultController extends AController {
   vaultService: IVaultService;
@@ -70,15 +68,12 @@ export class VaultController extends AController {
         projectName ? projectName : "new vault"
       );
       const arrayBuff = await db.save();
-
-      // fs.writeFileSync("/tmp/testvault.kdbx", Buffer.from(arrayBuff));
       res.contentType("application/octet-stream");
       res.shouldKeepAlive = true;
       res.setHeader("Connection", "keep-alive");
       res.setHeader("Keep-alive", "timeout=5");
       res.setHeader("Accept-Range", "byte");
       res.setHeader("Transfer-Encoding", "chunked");
-      // res.render("pages/getKeepass.ejs");
       res.status(201).send(Buffer.from(arrayBuff));
     } catch (err) {
       Logger.error(err.stack);
