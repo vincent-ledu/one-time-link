@@ -45,7 +45,8 @@ curl -v -H 'Content-Type: application/json' -XDELETE -d'{\
         <h3>Password generator:</h3>
         <pre>
           <code>
-curl -H 'Content-Type: application/json' -XGET <% endpoint %>/api/vault/password\?len\=20\&numbers\=true\&symbols\=true\&strict\=true
+curl -H 'Content-Type: application/json' \
+  -XGET <%= endpoint %>/api/vault/password\?len\=20\&numbers\=true\&symbols\=true\&strict\=true
 # Expected output: 8Elw=$6oe-fh1d0)L_nz
           </code>
         </pre>
@@ -62,7 +63,7 @@ curl -H 'Content-Type: application/json' -XGET <% endpoint %>/api/vault/password
 curl -H 'Content-Type: application/json' -XPOST -d'{\
   "projectName": "my project name",\
   "password": "8Elw=$6oe-fh1d0)L_nz",
-  "data": [{"column1": "c1", "column2": "c2"}] }' <% endpoint %>/api/vault \
+  "data": [{"column1": "c1", "column2": "c2"}] }' <%= endpoint %>/api/vault \
   --output vault.kdbx
           </code>
         </pre>
