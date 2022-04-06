@@ -15,15 +15,25 @@
         <table class="table table-striped">
           <thead class="table-dark">
             <tr>
-              <th><%= __("creation_date") %></th>
-              <th><%= __("id") %></th>
+              <th><%= __("counter") %></th>
+              <th><%= __("value") %></th>
+              <th><%= __("creation_at") %></th>
+              <th><%= __("updated_at") %></th>
             </tr>
           </thead>
           <tbody>
-            <% for (let i = 0; i < secrets.length; i++) { %>
+            <% for (let i = 0; i < counters.length; i++) { %>
             <tr>
-              <td><%= secrets[i].date %></td>
-              <td><%= secrets[i].id %></td>
+              <td><%= counters[i].counterName %></td>
+              <td><%= counters[i].counter %></td>
+              <td>
+                <%= new Date(Date.parse(counters[i].createdAt))
+                .toISOString().replace('T', ' ').replace('.000Z', '') %>
+              </td>
+              <td>
+                <%= new Date(Date.parse(counters[i].updatedAt))
+                .toISOString().replace('T', ' ').replace('.000Z', '') %>
+              </td>
             </tr>
             <% } %>
           </tbody>

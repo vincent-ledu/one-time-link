@@ -2,32 +2,48 @@ import * as kdbxweb from "kdbxweb";
 import * as argon2 from "../utils/argon2";
 import Logger from "../utils/logger";
 import { IVaultService } from "./IVaultService";
+import { Knex } from "knex";
+import Constants from "../../Constants";
 
 export class KdbxVaultService implements IVaultService {
-  private searchGroupByName(db: kdbxweb.Kdbx, groupName: string) {
-    const root = db.getDefaultGroup();
-    for (const group of root.allGroups()) {
-      if (group.name === groupName) {
-        return group;
-      }
-    }
-    return undefined;
+  counterTable = Constants.TABLE_NAMES.COUNTER;
+  knex: Knex;
+  constructor(knex: Knex) {
+    kdbxweb.CryptoEngine.setArgon2Impl(argon2.argon2);
+    this.knex = knex;
   }
 
-  async createVault(
+  upCounter = async (counterName: string): Promise<void> => {
+    if (this.knex) {
+      const total = await this.knex(this.counterTable)
+        .where("counterName", "=", counterName)
+        .count("counter as c");
+      if (total[0].c === 0) {
+        await this.knex(this.counterTable).insert({
+          counterName: counterName,
+        });
+      }
+      this.knex(this.counterTable)
+        .where("counterName", "=", counterName)
+        .increment("counter", 1)
+        .catch((reason) => {
+          Logger.error("Counter increment error");
+          Logger.error(reason);
+        });
+    }
+  };
+  createVault = async (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     jsonObj: any[],
     password: kdbxweb.ProtectedValue,
     vaultName: string
-  ) {
-    kdbxweb.CryptoEngine.setArgon2Impl(argon2.argon2);
+  ): Promise<kdbxweb.Kdbx> => {
     const credentials = new kdbxweb.KdbxCredentials(password);
     const db = kdbxweb.Kdbx.create(credentials, vaultName);
     jsonObj.forEach((row) => {
       const groupKeys = Object.keys(row).filter((key) =>
         ["GROUP", "GROUPE", "GRP", "ADABO"].includes(key.toUpperCase())
       );
-      Logger.debug(`groupKeys: ${groupKeys}`);
       let group = db.getDefaultGroup();
       let entry;
       if (groupKeys.length > 0) {
@@ -44,9 +60,6 @@ export class KdbxVaultService implements IVaultService {
         entry = db.createEntry(group);
       } else {
         entry = db.createEntry(group);
-        Logger.debug(
-          `creating entry in ${group.name} from ${group.parentGroup.name}`
-        );
       }
       for (const [key, value] of Object.entries(row)) {
         if (
@@ -79,6 +92,7 @@ export class KdbxVaultService implements IVaultService {
         }
       }
     });
-    return db;
-  }
+    this.upCounter("KeepassCreated");
+    return new Promise((resolve) => resolve(db));
+  };
 }

@@ -1,17 +1,18 @@
 import { Knex } from "knex";
-import { Secret } from "../domain/Secret";
+import { Counter } from "../domain/Counter";
 import Logger from "../utils/logger";
 import { IDashboardService } from "./IDashboardService";
+import Constants from "../../Constants";
 
 export class MySQLDashboardService implements IDashboardService {
   knex: Knex;
-  secretsTable = "secrets";
+  counterTable = Constants.TABLE_NAMES.COUNTER;
   constructor(knex: Knex) {
     this.knex = knex;
   }
-  getSecrets = async (): Promise<Secret[]> => {
+  getStats = async (): Promise<Counter[]> => {
     try {
-      return await this.knex(this.secretsTable).select();
+      return await this.knex(this.counterTable).select();
     } catch (e) {
       Logger.error(e);
       return [];

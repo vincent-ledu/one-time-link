@@ -1,7 +1,9 @@
+import "dotenv/config";
 import { knex, Knex } from "knex";
 import { DbConfig, DbType } from "./DbConfig";
 import logger from "./logger";
 import VError from "verror";
+import Logger from "./logger";
 
 export default class KnexInitializer {
   private knex: Knex | undefined;
@@ -31,7 +33,7 @@ export default class KnexInitializer {
         connection: connection,
         useNullAsDefault: true,
         migrations: {
-          tableName: "migrations",
+          tableName: (process.env.DB_TABLE_PREFIX || "") + "migrations",
         },
       });
     } else if (databaseConfig.dbType === DbType.SQLITE) {
@@ -59,6 +61,7 @@ export default class KnexInitializer {
         logger.info("Finished Database Migrations");
       } catch (error) {
         logger.error("Error while migrating DB", error);
+        Logger.error(error.stack);
         process.exit(1);
       }
     } else {

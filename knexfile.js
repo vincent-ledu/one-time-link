@@ -11,13 +11,12 @@ const connection = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME || "one-time-link-db",
 };
-
 const config = {
   client: "mysql",
   connection: connection,
   useNullAsDefault: true,
   migrations: {
-    tableName: "migrations",
+    tableName: (process.env.DB_TABLE_PREFIX || "") + "migrations",
   },
 };
 

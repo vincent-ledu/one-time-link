@@ -10,14 +10,17 @@
   "kp_password": "Password vault",
   "kp_generate_password": "Generate password",
 
-  "ots_h1": "Create and share a secret that will be visible only one time",
-  "ots_message": "Message to share",
-  "ots_secret": "Secret",
-  "ots_get_delete_secret": "Get and delete secret",
-  "ots_secret_created": "Secret created!",
-  "ots_link_to_share": "Link to share your secret only one time :",
+  "otl_h1": "Create and share a secret that will be visible only one time",
+  "otl_message": "Message to share",
+  "otl_secret": "Secret",
+  "otl_get_n_delete_secret": "Get and delete secret",
+  "otl_secret_created": "Secret created!",
+  "otl_link_to_share": "Link to share your secret only one time :",
 
-  "date_of_creation": "date of creation",
+  "counter": "Counter",
+  "value": "Value",
+  "creation_at": "Created at",
+  "updated_at": "Updated at",
   "dashboard": "Dashboard",
   "submit": "Submit"
 }

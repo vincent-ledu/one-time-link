@@ -11,9 +11,9 @@ export class DashboardController extends AController {
 
   dashboard = async (req: Request, res: Response): Promise<void> => {
     this.dashboardService
-      .getSecrets()
-      .then((secrets) => {
-        res.render("pages/dashboard", { secrets: secrets });
+      .getStats()
+      .then((counters) => {
+        res.render("pages/dashboard", { counters: counters });
       })
       .catch((error) => {
         res.status(500).send(error.message);

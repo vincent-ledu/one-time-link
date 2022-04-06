@@ -10,6 +10,7 @@ import { BufferStream } from "../utils/BufferStream";
 import { Knex } from "knex";
 import path from "path";
 import os from "os";
+import Constants from "../../Constants";
 
 function tmpFile(prefix: string, suffix: string, tmpdir: string) {
   prefix = typeof prefix !== "undefined" ? prefix : "tmp.";
@@ -24,21 +25,43 @@ function tmpFile(prefix: string, suffix: string, tmpdir: string) {
 // See: https://medium.com/@brandonstilson/lets-encrypt-files-with-node-85037bea8c0e
 export class AES256EncryptServiceMySQL implements IEncryptService {
   knex: Knex;
-  secretTable = "secrets";
+  secretTable = Constants.TABLE_NAMES.SECRETS;
+  counterTable = Constants.TABLE_NAMES.COUNTER;
   constructor(knex: Knex) {
     this.knex = knex;
   }
+  upCounter = async (counterName: string): Promise<void> => {
+    if (this.knex) {
+      const total = await this.knex(this.counterTable)
+        .where("counterName", "=", counterName)
+        .count("counter as c");
+      if (total[0].c === 0) {
+        await this.knex(this.counterTable).insert({
+          counterName: counterName,
+        });
+      }
+      this.knex(this.counterTable)
+        .where("counterName", "=", counterName)
+        .increment("counter", 1)
+        .catch((reason) => {
+          Logger.error("Counter increment error");
+          Logger.error(reason);
+        });
+    }
+  };
 
   encryptSecret = async (secret: Secret): Promise<void> => {
     Logger.info(`Encrypting secret ${secret.id} from db`);
 
     if (secret.message !== "") {
       this.encryptMessage(secret.id, secret.message, secret.password);
+      this.upCounter("SecretsEncrypted");
     }
   };
   decryptSecret = async (secret: Secret): Promise<Secret> => {
     Logger.info(`Decrypting secret ${secret.id}`);
     secret.message = await this.decryptMessage(secret.id, secret.password);
+    this.upCounter("SecretsDecrypted");
     return secret;
   };
   encryptMessage = (id: string, text: string, password: string): void => {

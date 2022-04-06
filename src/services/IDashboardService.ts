@@ -1,5 +1,5 @@
-import { Secret } from "../domain/Secret";
+import { Counter } from "../domain/Counter";
 
 export interface IDashboardService {
-  getSecrets(): Promise<Secret[]>;
+  getStats(): Promise<Counter[]>;
 }
