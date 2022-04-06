@@ -10,7 +10,7 @@ import { BufferStream } from "../utils/BufferStream";
 import { Knex } from "knex";
 import path from "path";
 import os from "os";
-import Constants from "../../Constants";
+import { Constants } from "../domain/Constants";
 
 function tmpFile(prefix: string, suffix: string, tmpdir: string) {
   prefix = typeof prefix !== "undefined" ? prefix : "tmp.";

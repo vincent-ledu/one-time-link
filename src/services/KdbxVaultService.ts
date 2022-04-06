@@ -3,7 +3,7 @@ import * as argon2 from "../utils/argon2";
 import Logger from "../utils/logger";
 import { IVaultService } from "./IVaultService";
 import { Knex } from "knex";
-import Constants from "../../Constants";
+import { Constants } from "../domain/Constants";
 
 export class KdbxVaultService implements IVaultService {
   counterTable = Constants.TABLE_NAMES.COUNTER;
