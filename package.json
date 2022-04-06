@@ -9,7 +9,7 @@
     "build": "tsc",
     "dockerbuild": "tsc",
     "postbuild": "npm test",
-    "pack": "tar --exclude='tests' --exclude='./tests' --exclude='./src' --exclude='./.git' --exclude='./one-time-link.tgz' -czf ../one-time-link.tgz  . && mv ../one-time-link.tgz .",
+    "pack": "cp src/utils/argon2-asm.min.js dist/utils/ && tar --exclude='tests' --exclude='./tests' --exclude='./src' --exclude='./.git' --exclude='./one-time-link.tgz' -czf ../one-time-link.tgz  . && mv ../one-time-link.tgz .",
     "test": "cross-env NODE_ENV=TEST mocha -r ts-node/register src/**/*.spec.ts",
     "test:watch": "cross-env NODE_ENV=TEST mocha -r ts-node/register src/**/*.spec.ts --watch",
     "test:cov": "cross-env NODE_ENV=TEST nyc --reporter=text mocha -r ts-node/register src/**/*.spec.ts",
