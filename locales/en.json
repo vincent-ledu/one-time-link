@@ -6,6 +6,9 @@
   "kp_h1": "Keepass Generator",
   "kp_subtitle": "Transform CSV data to KeePass",
   "kp_textarea_placeholder": "Copy/Paste csv content here.",
+  "kp_project_name": "Project name",
+  "kp_password": "Password vault",
+  "kp_generate_password": "Generate password",
 
   "ots_h1": "Create and share a secret that will be visible only one time",
   "ots_message": "Message to share",

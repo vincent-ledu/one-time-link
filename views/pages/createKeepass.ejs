@@ -11,10 +11,22 @@
       <div class="jumbotron">
         <h1><%= __("kp_h1") %></h1>
         <p><%= __("kp_subtitle") %></p>
-        <!-- <form method="post" action="/kdbx"> -->
-        <form onsubmit="return false">
-          <div class="form-group">
-            <div class="input-group mb-3">
+        <form id="form">
+          <div class="">
+            <div class="form-group">
+              <label for="project_name"><%= __("kp_project_name") %></label>
+              <input class="form-control" type="text" id="projectName" />
+            </div>
+            <div class="form-group">
+              <label for="password"><%= __("kp_password") %></label>
+              <div class="input-group mb-3">
+                <input class="form-control" type="text" id="password" />
+                <button class="btn btn-success" onclick="generatePassword()">
+                  <%= __("kp_generate_password") %>
+                </button>
+              </div>
+            </div>
+            <div class="form-group">
               <textarea
                 class="form-control"
                 name="csv"
@@ -23,10 +35,8 @@
                 rows="12"
               ></textarea>
             </div>
-            <div class="input-group mb-3">
-              <button class="btn btn-success" onclick="createVault()">
-                <%= __("submit") %>
-              </button>
+            <div class="form-group">
+              <button class="btn btn-success"><%= __("submit") %></button>
             </div>
           </div>
         </form>
@@ -36,26 +46,53 @@
     <footer><%- include('../partials/footer'); %></footer>
   </body>
   <script type="text/javascript">
-    function createVault() {
+    const form = document.getElementById("form");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const projectName = btoa(
+        escape(document.getElementById("projectName").value)
+      );
+      const password = btoa(escape(document.getElementById("password").value));
+      const csv = btoa(escape(document.getElementById("csv").value));
+      const data = `{ "csv":"${csv}","password":"${password}","projectName":"${projectName}"}`;
+
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = "arraybuffer";
+      xhr.onerror = (err) => {
+        console.log(err);
+      };
+      xhr.onload = (event) => {
+        const blob = new Blob([xhr.response]);
+        const url = window.URL.createObjectURL(blob, {
+          type: "application/octetstream",
+        });
+        const a = document.createElement("a");
+        const filename = "vault.kdbx";
+        a.style = "none";
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      };
+      xhr.open("POST", "/vault");
+      xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+      xhr.send(data);
+    });
+
+    function generatePassword() {
       $.ajax({
-        method: "POST",
-        contentType: "application/x-www-form-urlencoded",
-        data: `csv=${document.getElementById("csv").value}`,
-        url: "/vault",
+        method: "GET",
+        contentType: "application/json",
+        url: "/vault/password",
         success: (res) => {
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          const filename = "vault.kdbx";
-          a.style = "none";
-          a.href = url;
-          a.download = filename;
-          document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
+          document.getElementById("password").value = res;
         },
         error: (xmlHttpRequest, textStatus, errorThrown) => {
-          console.log("Error creating vault");
+          console.log("Error while generating password vault");
+          console.log(errorThrown);
         },
       });
     }

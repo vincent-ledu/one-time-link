@@ -13,5 +13,6 @@ export class VaultRoute extends Routes {
   protected intializeRoutes(): void {
     this.router.get("/", this.vaultController.home);
     this.router.post("/", this.vaultController.createVault);
+    this.router.get("/password", this.vaultController.generatePassword);
   }
 }

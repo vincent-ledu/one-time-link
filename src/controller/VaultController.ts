@@ -6,6 +6,8 @@ import generator from "generate-password";
 import Logger from "../utils/logger";
 import csv from "csvtojson";
 import { ProtectedValue } from "kdbxweb";
+import { Readable } from "stream";
+import fs from "fs";
 
 export class VaultController extends AController {
   vaultService: IVaultService;
@@ -16,6 +18,19 @@ export class VaultController extends AController {
   home = (req: Request, res: Response): void => {
     res.render("pages/createKeepass");
   };
+
+  generatePassword = (req: Request, res: Response): Promise<void> => {
+    const pwd = generator.generate({
+      length: 20,
+      numbers: true,
+      symbols: true,
+      strict: true,
+    });
+    Logger.debug(pwd);
+    res.status(200).send(pwd);
+    return;
+  };
+
   createVault = async (req: Request, res: Response): Promise<void> => {
     try {
       const errors = validationResult(req);
@@ -23,34 +38,50 @@ export class VaultController extends AController {
         throw errors;
       }
       let jsonObj;
-      if (req.headers["content-type"] === "application/json") {
-        jsonObj = req.body;
-      } else if (req.body) {
+      Logger.debug(req.body);
+      const password = unescape(
+        Buffer.from(req.body.password, "base64").toString()
+      );
+      const projectName = unescape(
+        Buffer.from(req.body.projectName, "base64").toString()
+      );
+
+      if (req.body.csv) {
+        const csvdata = unescape(
+          Buffer.from(req.body.csv, "base64").toString()
+        );
         jsonObj = await csv({
           delimiter: ["\t"],
-        }).fromString(req.body.csv);
+        }).fromString(csvdata);
+      } else if (req.body.data) {
+        jsonObj = req.body.data;
       }
+      Logger.debug(`projectName: ${projectName}`);
+      Logger.debug(`password: ${password}`);
+      Logger.debug(`jsonObj: ${jsonObj}`);
       if (!jsonObj) {
         res.status(400);
         return;
       }
-      const pwd = generator.generate({
-        length: 20,
-        numbers: true,
-        symbols: true,
-        strict: true,
-      });
+      Logger.debug(`pwd: ${password}`);
       const db = await this.vaultService.createVault(
         jsonObj,
-        ProtectedValue.fromString(pwd),
-        req.body.name ? req.body.name : "new vault"
+        ProtectedValue.fromString(password),
+        projectName ? projectName : "new vault"
       );
-      res.contentType("application/x-keepass");
-      // res.set("Content-disposition", "attachment; filename=coffre.kdbx");
       const arrayBuff = await db.save();
+
+      // fs.writeFileSync("/tmp/testvault.kdbx", Buffer.from(arrayBuff));
+      res.contentType("application/octet-stream");
+      res.shouldKeepAlive = true;
+      res.setHeader("Connection", "keep-alive");
+      res.setHeader("Keep-alive", "timeout=5");
+      res.setHeader("Accept-Range", "byte");
+      res.setHeader("Transfer-Encoding", "chunked");
+      // res.render("pages/getKeepass.ejs");
       res.status(201).send(Buffer.from(arrayBuff));
     } catch (err) {
-      Logger.error(err);
+      Logger.error(err.stack);
       res.status(500).send("Error while creating the stuff... sorry...");
     }
   };
