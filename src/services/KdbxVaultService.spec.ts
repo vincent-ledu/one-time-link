@@ -9,7 +9,7 @@ describe("KdbxManager test suite", () => {
     csv()
       .fromString(csvStr)
       .then((jsonObj) => {
-        const kdbxService = new KdbxVaultService();
+        const kdbxService = new KdbxVaultService(undefined);
 
         kdbxService
           .createVault(

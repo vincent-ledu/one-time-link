@@ -4,14 +4,14 @@ import KnexInitializer from "../utils/KnexInitializer";
 import { MySQLDashboardService } from "./MySQLFileDashboardService";
 
 describe("Dashboard tests", () => {
-  it("should return a secrets array", () => {
+  it.skip("should return a secrets array", () => {
     const dbconfig = dbConfig();
     const knexInitializer = new KnexInitializer(dbconfig);
     const dashboard = new MySQLDashboardService(
       knexInitializer.getKnexInstance()
     );
-    return dashboard.getSecrets().then((secrets) => {
-      expect(secrets).to.be.not.undefined;
+    return dashboard.getStats().then((counters) => {
+      expect(counters).to.be.not.undefined;
     });
   });
 });
