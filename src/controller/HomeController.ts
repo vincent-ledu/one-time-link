@@ -6,13 +6,11 @@ export class HomeController extends AController {
     super();
   }
   home = (req: Request, res: Response): void => {
-    res.status(200).render("pages/createSecret");
+    res.status(200).render("pages/home");
   };
   devZone = (req: Request, res: Response): void => {
-    res
-      .status(200)
-      .render("pages/devZone", {
-        endpoint: `${req.protocol}://${req.get("Host")}`,
-      });
+    res.status(200).render("pages/devZone", {
+      endpoint: `${req.protocol}://${req.get("Host")}`,
+    });
   };
 }

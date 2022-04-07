@@ -53,10 +53,17 @@
       //   escape(document.getElementById("projectName").value)
       // );
       // const password = btoa(escape(document.getElementById("password").value));
-      const projectName = document.getElementById("projectName").value;
-      const password = document.getElementById("password").value;
+      const projectName = document
+        .getElementById("projectName")
+        .value.replace(/\\/g, "\\\\")
+        .replace(/"/g, '\\"');
+      const password = document
+        .getElementById("password")
+        .value.replace(/\\/g, "\\\\")
+        .replace(/"/g, '\\"');
       const csv = btoa(escape(document.getElementById("csv").value));
       const data = `{ "csv":"${csv}","password":"${password}","projectName":"${projectName}"}`;
+      // const data = { csv: csv, password: password, projectName: projectName };
 
       var xhr = new XMLHttpRequest();
       xhr.responseType = "arraybuffer";
@@ -86,7 +93,7 @@
       $.ajax({
         method: "GET",
         contentType: "application/json",
-        url: "/vault/password",
+        url: "/password",
         success: (res) => {
           document.getElementById("password").value = res;
         },

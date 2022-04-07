@@ -24,7 +24,7 @@ export class VaultRoute extends Routes {
         .isLength({ min: 0, max: 128 }),
       body(
         "password",
-        "password must be a string between 0 to 128 characters long"
+        "password must be a string between 16 to 128 characters long"
       )
         .isString()
         .trim()
@@ -32,10 +32,10 @@ export class VaultRoute extends Routes {
       body("csv", "csv must be a escaped string base 64 encoded")
         .optional()
         .isString()
+        .isBase64()
         .trim(),
       body("data").optional().isArray(),
       this.vaultController.createVault
     );
-    this.router.get("/password", this.vaultController.generatePassword);
   }
 }

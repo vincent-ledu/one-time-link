@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
-import { IVaultService } from "../services/IVaultService";
-import { AController } from "./AController";
 import { validationResult } from "express-validator";
-import generator from "generate-password";
+import { AController } from "./AController";
+import { IVaultService } from "../services/IVaultService";
 import Logger from "../utils/logger";
 import csv from "csvtojson";
 import { ProtectedValue } from "kdbxweb";
@@ -15,17 +14,6 @@ export class VaultController extends AController {
   }
   home = (req: Request, res: Response): void => {
     res.render("pages/createKeepass");
-  };
-
-  generatePassword = (req: Request, res: Response): Promise<void> => {
-    const pwd = generator.generate({
-      length: req.query.len ? parseInt(req.query.len.toString()) : 20,
-      numbers: req.query.numbers ? Boolean(req.query.numbers) : true,
-      symbols: req.query.symbols ? Boolean(req.query.symbols) : true,
-      strict: req.query.strict ? Boolean(req.query.strict) : true,
-    });
-    res.status(200).send(pwd);
-    return;
   };
 
   createVault = async (req: Request, res: Response): Promise<void> => {

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<!-- https://www.digitalocean.com/community/tutorials/how-to-use-ejs-to-template-your-node-application -->
+<html lang="en">
+  <head>
+    <%- include('../partials/head'); %>
+  </head>
+  <body class="container">
+    <header><%- include('../partials/header'); %></header>
+
+    <main>
+      <div class="jumbotron">
+        <div class="container">
+          <a href="/vault" class="btn btn-success"
+            ><%= __("create_a_keepass") %></a
+          >
+          <a href="/secret" class="btn btn-success">
+            <%= __("create_n_share_secret") %>
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <footer><%- include('../partials/footer'); %></footer>
+  </body>
+</html>

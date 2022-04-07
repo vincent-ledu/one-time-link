@@ -15,6 +15,9 @@ import { VaultRoute } from "./routes/VaultRoute";
 import { I18n } from "i18n";
 import path from "path";
 import { IVaultService } from "./services/IVaultService";
+import { IPasswordGeneratorService } from "./services/IPasswordGeneratorService";
+import { PasswordGeneratorService } from "./services/PasswordGeneratorService";
+import { PasswordGeneratorRoute } from "./routes/PasswordGeneratorRoute";
 
 export interface App {
   stop: () => Promise<void>;
@@ -48,6 +51,7 @@ export async function startApp(): Promise<App> {
   const knex = knexInitializer.getKnexInstance();
   //#endregion
   //#region Services
+  const passwordGeneratorService = new PasswordGeneratorService();
   let encryptService: IEncryptService;
   let vaultService: IVaultService;
   if (databaseConfig.dbType === DbType.MYSQL && knex !== undefined) {
@@ -61,6 +65,9 @@ export async function startApp(): Promise<App> {
   //#endregion
   //#region Routes
   const vaultRoute = new VaultRoute(vaultService);
+  const passwordGeneratorRoute = new PasswordGeneratorRoute(
+    passwordGeneratorService
+  );
   if (databaseConfig.dbType === DbType.MYSQL && knex !== undefined) {
     const dashboardService = new MySQLDashboardService(knex);
     const dashboardRoute = new DashboardRoute(dashboardService);
@@ -69,8 +76,10 @@ export async function startApp(): Promise<App> {
   const secretRoute = new SecretRoute(encryptService);
   const homeRoute = new HomeRoute();
   app.use("/", homeRoute.router);
+  app.use("/password", passwordGeneratorRoute.router);
   app.use("/secret", secretRoute.router);
   app.use("/vault", vaultRoute.router);
+  app.use("/api/password", passwordGeneratorRoute.router);
   app.use("/api/secret", secretRoute.router);
   app.use("/api/vault", vaultRoute.router);
   //#endregion

@@ -4,13 +4,45 @@ import Logger from "../utils/logger";
 import { IVaultService } from "./IVaultService";
 import { Knex } from "knex";
 import { Constants } from "../domain/Constants";
+import "dotenv/config";
 
 export class KdbxVaultService implements IVaultService {
   counterTable = Constants.TABLE_NAMES.COUNTER;
   knex: Knex;
+  groupNames: string[];
+  passwordNames: string[];
+  titleNames: string[];
+  usernameNames: string[];
   constructor(knex: Knex) {
     kdbxweb.CryptoEngine.setArgon2Impl(argon2.argon2);
     this.knex = knex;
+    if (process.env.KP_GROUPS) {
+      this.groupNames = process.env.KP_GROUPS.split(",");
+    } else {
+      this.groupNames = ["GROUP", "GROUPE", "GRP"];
+    }
+    if (process.env.KP_PASSWORD) {
+      this.passwordNames = process.env.KP_PASSWORDS.split(",");
+    } else {
+      this.passwordNames = [
+        "PASSWORD",
+        "MOT DE PASSE",
+        "PASSE",
+        "PASS",
+        "PWD",
+        "MDP",
+      ];
+    }
+    if (process.env.KP_TITLES) {
+      this.titleNames = process.env.KP_TITLES.split(",");
+    } else {
+      this.titleNames = ["TITLE", "TITRE", "LIBELLE", "DESCRIPTION"];
+    }
+    if (process.env.KP_USERNAMES) {
+      this.usernameNames = process.env.KP_USERNAMES.split(",");
+    } else {
+      this.usernameNames = ["LOGIN", "USERNAME", "USER", "UTILISATEUR"];
+    }
   }
 
   upCounter = async (counterName: string, inc?: number): Promise<void> => {
@@ -42,13 +74,11 @@ export class KdbxVaultService implements IVaultService {
     const db = kdbxweb.Kdbx.create(credentials, vaultName);
     this.upCounter("KeepassEntries", jsonObj.length);
     jsonObj.forEach((row) => {
-      // const groupKeys = Object.keys(row).filter((key) =>
-      //   ["GROUP", "GROUPE", "GRP", "ADABO"].includes(key.toUpperCase())
-      // );
       const groupKeys = Object.keys(row).filter((key) => {
-        const grps = ["GROUP", "GROUPE", "GRP", "ADABO"];
-        for (let i = 0; i < grps.length; i++) {
-          if (new RegExp(grps[i] + "[0-9]*").test(key.toUpperCase())) {
+        for (let i = 0; i < this.groupNames.length; i++) {
+          if (
+            new RegExp(this.groupNames[i] + "[0-9]*").test(key.toUpperCase())
+          ) {
             return true;
           }
         }
@@ -69,26 +99,14 @@ export class KdbxVaultService implements IVaultService {
       }
       const entry = db.createEntry(group);
       for (const [key, value] of Object.entries(row)) {
-        if (
-          ["PASSWORD", "MOT DE PASSE", "PASSE", "PASS", "PWD", "MDP"].includes(
-            key.toUpperCase()
-          )
-        ) {
+        if (this.passwordNames.includes(key.toUpperCase())) {
           entry.fields.set(
             "Password",
             kdbxweb.ProtectedValue.fromString(String(value))
           );
-        } else if (
-          ["TITLE", "TITRE", "LIBELLE", "DESCRIPTION"].includes(
-            key.toUpperCase()
-          )
-        ) {
+        } else if (this.titleNames.includes(key.toUpperCase())) {
           entry.fields.set("Title", String(value));
-        } else if (
-          ["LOGIN", "USERNAME", "USER", "UTILISATEUR"].includes(
-            key.toUpperCase()
-          )
-        ) {
+        } else if (this.usernameNames.includes(key.toUpperCase())) {
           entry.fields.set("UserName", String(value));
         } else {
           entry.fields.set(key, String(value));
