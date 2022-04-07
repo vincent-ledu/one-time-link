@@ -35,13 +35,6 @@ export class VaultController extends AController {
         throw errors;
       }
       let jsonObj;
-      Logger.debug(req.body);
-      // const password = unescape(
-      //   Buffer.from(req.body.password, "base64").toString()
-      // );
-      // const projectName = unescape(
-      //   Buffer.from(req.body.projectName, "base64").toString()
-      // );
       const password = req.body.password;
       const projectName = req.body.projectName;
 
@@ -51,7 +44,19 @@ export class VaultController extends AController {
         );
         jsonObj = await csv({
           delimiter: ["\t"],
-        }).fromString(csvdata);
+        })
+          .on("header", (header) => {
+            const dupHeader = header.filter(
+              (item: string, index: number) => header.indexOf(item) !== index
+            );
+            for (let i = 0; i < dupHeader.length; i++) {
+              let inc = 1;
+              while (header.indexOf(dupHeader[i]) !== -1) {
+                header[header.indexOf(dupHeader[i])] = dupHeader[i] + inc++;
+              }
+            }
+          })
+          .fromString(csvdata);
       } else if (req.body.data) {
         jsonObj = req.body.data;
       }
@@ -74,7 +79,7 @@ export class VaultController extends AController {
       res.status(201).send(Buffer.from(arrayBuff));
     } catch (err) {
       Logger.error(err.stack);
-      res.status(500).send("Error while creating the stuff... sorry...");
+      AController.processErrors(err, res);
     }
   };
 }

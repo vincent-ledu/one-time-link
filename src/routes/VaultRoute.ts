@@ -12,7 +12,30 @@ export class VaultRoute extends Routes {
   }
   protected intializeRoutes(): void {
     this.router.get("/", this.vaultController.home);
-    this.router.post("/", this.vaultController.createVault);
+    this.router.post(
+      "/",
+      body(
+        "projectName",
+        "projectName must be a string between 0 to 128 characters long"
+      )
+        .isString()
+        .escape()
+        .trim()
+        .isLength({ min: 0, max: 128 }),
+      body(
+        "password",
+        "password must be a string between 0 to 128 characters long"
+      )
+        .isString()
+        .trim()
+        .isLength({ min: 16, max: 128 }),
+      body("csv", "csv must be a escaped string base 64 encoded")
+        .optional()
+        .isString()
+        .trim(),
+      body("data").optional().isArray(),
+      this.vaultController.createVault
+    );
     this.router.get("/password", this.vaultController.generatePassword);
   }
 }

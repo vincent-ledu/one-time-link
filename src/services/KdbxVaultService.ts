@@ -42,9 +42,18 @@ export class KdbxVaultService implements IVaultService {
     const db = kdbxweb.Kdbx.create(credentials, vaultName);
     this.upCounter("KeepassEntries", jsonObj.length);
     jsonObj.forEach((row) => {
-      const groupKeys = Object.keys(row).filter((key) =>
-        ["GROUP", "GROUPE", "GRP", "ADABO"].includes(key.toUpperCase())
-      );
+      // const groupKeys = Object.keys(row).filter((key) =>
+      //   ["GROUP", "GROUPE", "GRP", "ADABO"].includes(key.toUpperCase())
+      // );
+      const groupKeys = Object.keys(row).filter((key) => {
+        const grps = ["GROUP", "GROUPE", "GRP", "ADABO"];
+        for (let i = 0; i < grps.length; i++) {
+          if (new RegExp(grps[i] + "[0-9]*").test(key.toUpperCase())) {
+            return true;
+          }
+        }
+        return false;
+      });
       let group = db.getDefaultGroup();
       if (groupKeys.length > 0) {
         for (let i = 0; i < groupKeys.length; i += 1) {
@@ -69,10 +78,6 @@ export class KdbxVaultService implements IVaultService {
             "Password",
             kdbxweb.ProtectedValue.fromString(String(value))
           );
-        } else if (
-          ["GROUP", "GROUPE", "GRP", "ADABO"].includes(key.toUpperCase())
-        ) {
-          // do nothing
         } else if (
           ["TITLE", "TITRE", "LIBELLE", "DESCRIPTION"].includes(
             key.toUpperCase()
