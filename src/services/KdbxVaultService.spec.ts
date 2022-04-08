@@ -4,22 +4,33 @@ import { expect } from "chai";
 import { ProtectedValue } from "kdbxweb";
 
 describe("KdbxManager test suite", () => {
-  it("should create a kdbx", () => {
-    const csvStr = "ADABO,Login,pwd,Base\nZUDA0,monlogin,pwd,totodb";
-    csv()
-      .fromString(csvStr)
-      .then((jsonObj) => {
-        const kdbxService = new KdbxVaultService(undefined);
+  it("should create a simple kdbx", async () => {
+    const csvStr = "Login,pwd,Base\nmonlogin,pwd,totodb";
+    const jsonObj = await csv().fromString(csvStr);
+    const kdbxService = new KdbxVaultService(undefined);
 
-        kdbxService
-          .createVault(
-            jsonObj,
-            ProtectedValue.fromString("secret123"),
-            "mykeepass"
-          )
-          .then((db) => {
-            expect(db.groups.length).to.be.equals(1);
-          });
-      });
+    const db = await kdbxService.createVault(
+      jsonObj,
+      ProtectedValue.fromString("secret123"),
+      "mykeepass"
+    );
+    expect(db.groups.length).to.be.equals(1);
+  });
+  it("should create a kdbx with 1 group depth", async () => {
+    const csvStr = "Login,pwd,Base,groupe\nmonlogin,pwd,totodb,db";
+    const jsonObj = await csv().fromString(csvStr);
+    const kdbxService = new KdbxVaultService(undefined);
+
+    const db = await kdbxService.createVault(
+      jsonObj,
+      ProtectedValue.fromString("secret123"),
+      "mykeepass"
+    );
+    expect(db.getDefaultGroup().groups[0].name === "Recycle Bin");
+    expect(db.getDefaultGroup().groups[1].name === "db");
+    expect(
+      db.getDefaultGroup().groups[1].entries[0].fields.get("UserName") ===
+        "monlogin"
+    );
   });
 });

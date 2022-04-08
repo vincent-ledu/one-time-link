@@ -77,7 +77,9 @@ export class KdbxVaultService implements IVaultService {
       const groupKeys = Object.keys(row).filter((key) => {
         for (let i = 0; i < this.groupNames.length; i++) {
           if (
-            new RegExp(this.groupNames[i] + "[0-9]*").test(key.toUpperCase())
+            new RegExp("^" + this.groupNames[i] + "[0-9]*").test(
+              key.toUpperCase()
+            )
           ) {
             return true;
           }

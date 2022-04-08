@@ -40,7 +40,7 @@ export class AES256EncryptServiceMySQL implements IEncryptService {
           counterName: counterName,
         });
       }
-      this.knex(this.counterTable)
+      await this.knex(this.counterTable)
         .where("counterName", "=", counterName)
         .increment("counter", 1)
         .catch((reason) => {
@@ -55,7 +55,7 @@ export class AES256EncryptServiceMySQL implements IEncryptService {
 
     if (secret.message !== "") {
       this.encryptMessage(secret.id, secret.message, secret.password);
-      this.upCounter("SecretsEncrypted");
+      await this.upCounter("SecretsEncrypted");
     }
   };
   decryptSecret = async (secret: Secret): Promise<Secret> => {

@@ -62,8 +62,9 @@ export class VaultController extends AController {
       res.shouldKeepAlive = true;
       res.setHeader("Connection", "keep-alive");
       res.setHeader("Keep-alive", "timeout=5");
-      res.setHeader("Accept-Range", "byte");
-      res.setHeader("Transfer-Encoding", "chunked");
+      res.setHeader("Accept-Ranges", "bytes");
+
+      // res.setHeader("Transfer-Encoding", "chunked");
       res.status(201).send(Buffer.from(arrayBuff));
     } catch (err) {
       Logger.error(err.stack);

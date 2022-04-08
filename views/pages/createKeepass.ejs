@@ -72,9 +72,10 @@
       };
       xhr.onload = (event) => {
         const blob = new Blob([xhr.response]);
-        const url = window.URL.createObjectURL(blob, {
-          type: "application/octetstream",
-        });
+        const url = window.URL.createObjectURL(blob);
+        // const url = window.URL.createObjectURL(blob, {
+        //   type: "application/octetstream",
+        // });
         const a = document.createElement("a");
         const filename = "vault.kdbx";
         a.style = "none";

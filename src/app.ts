@@ -15,7 +15,6 @@ import { VaultRoute } from "./routes/VaultRoute";
 import { I18n } from "i18n";
 import path from "path";
 import { IVaultService } from "./services/IVaultService";
-import { IPasswordGeneratorService } from "./services/IPasswordGeneratorService";
 import { PasswordGeneratorService } from "./services/PasswordGeneratorService";
 import { PasswordGeneratorRoute } from "./routes/PasswordGeneratorRoute";
 
@@ -23,7 +22,7 @@ export interface App {
   stop: () => Promise<void>;
 }
 
-if (process.env.NODE_ENV !== "test") {
+if (process.env.NODE_ENV !== "TEST") {
   startApp().then(() => {
     Logger.info("Server started");
   });
@@ -91,12 +90,13 @@ export async function startApp(): Promise<App> {
   const server = app.listen(PORT, () => {
     Logger.info(`App listening on port ${PORT}!`);
   });
-
   const stopApp = async (): Promise<void> => {
+    Logger.info(`Stopping server on port ${PORT}`);
     await server.close();
     await knex?.destroy();
   };
 
+  module.exports = server;
   return {
     stop: stopApp,
   };

@@ -4,6 +4,7 @@ import { AController } from "./AController";
 import { Secret } from "../domain/Secret";
 import { validationResult } from "express-validator";
 import Logger from "../utils/logger";
+import { decode } from "html-entities";
 
 export class SecretController extends AController {
   encryptService: IEncryptService;
@@ -44,7 +45,7 @@ export class SecretController extends AController {
         payload.date
       );
       const sec = await this.encryptService.decryptSecret(secret, true);
-      secret.message = sec.message;
+      secret.message = decode(sec.message);
       res.status(200).send(secret);
     } catch (e) {
       AController.processErrors(e, res);
@@ -69,25 +70,15 @@ export class SecretController extends AController {
         this.generatePwd()
       );
       await this.encryptService.encryptSecret(secret);
-      if (req.baseUrl.startsWith("/api/")) {
-        res.setHeader("Content-Type", "application/json");
-        res.status(201).send({
-          linkToShare: `${req.protocol}://${req.get("Host")}/${secret.date}/${
-            secret.id
-          }/${secret.password}`,
-          id: secret.id,
-          date: secret.date,
-          password: secret.password,
-        });
-      } else {
-        res.render("pages/secretCreated", {
-          error: undefined,
-          id: secret.id,
-          password: secret.password,
-          date: secret.date,
-          url: secret.date + "/" + secret.id + "/" + secret.password,
-        });
-      }
+      res.setHeader("Content-Type", "application/json");
+      res.status(201).send({
+        linkToShare: `${req.protocol}://${req.get("Host")}/secret/${
+          secret.date
+        }/${secret.id}/${secret.password}`,
+        id: secret.id,
+        date: secret.date,
+        password: secret.password,
+      });
     } catch (e) {
       Logger.error(e.stack);
       AController.handleError(e, req, res);
