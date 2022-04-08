@@ -4,6 +4,7 @@ import axios from "axios";
 import { Kdbx, KdbxCredentials } from "kdbxweb";
 import { ProtectedValue } from "kdbxweb";
 import Logger from "../../utils/logger";
+import fs from "fs";
 
 let server: App;
 let baseUrl: string;
@@ -239,8 +240,13 @@ describe("Vault Integration Tests", function () {
       file.buffer,
       new KdbxCredentials(ProtectedValue.fromString(password))
     );
+    fs.writeFileSync("/tmp/userkdbx.kdbx", Buffer.from(file.buffer));
+
     expect(db.versionMajor).to.be.eq(4);
     const entry = db.getDefaultGroup().entries[0];
-    Logger.warn(entry);
+    expect(entry.fields.get("UserName")).to.be.eq("login");
+    expect(entry.fields.get("user")).to.be.eq("user");
+    expect(entry.fields.get("username")).to.be.eq("username");
+    expect(entry.fields.get("utilisateur")).to.be.eq("utilisateur");
   });
 });

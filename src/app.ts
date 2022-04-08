@@ -21,8 +21,8 @@ import { PasswordGeneratorRoute } from "./routes/PasswordGeneratorRoute";
 export interface App {
   stop: () => Promise<void>;
 }
-
-if (process.env.NODE_ENV !== "TEST") {
+const isInTest = process.env.NODE_ENV === "TEST";
+if (!isInTest) {
   startApp().then(() => {
     Logger.info("Server started");
   });
@@ -53,7 +53,11 @@ export async function startApp(): Promise<App> {
   const passwordGeneratorService = new PasswordGeneratorService();
   let encryptService: IEncryptService;
   let vaultService: IVaultService;
-  if (databaseConfig.dbType === DbType.MYSQL && knex !== undefined) {
+  if (
+    !isInTest &&
+    databaseConfig.dbType === DbType.MYSQL &&
+    knex !== undefined
+  ) {
     await knexInitializer.migrate();
     vaultService = new KdbxVaultService(knex);
     encryptService = new AES256EncryptServiceMySQL(knex);
@@ -67,7 +71,11 @@ export async function startApp(): Promise<App> {
   const passwordGeneratorRoute = new PasswordGeneratorRoute(
     passwordGeneratorService
   );
-  if (databaseConfig.dbType === DbType.MYSQL && knex !== undefined) {
+  if (
+    !isInTest &&
+    databaseConfig.dbType === DbType.MYSQL &&
+    knex !== undefined
+  ) {
     const dashboardService = new MySQLDashboardService(knex);
     const dashboardRoute = new DashboardRoute(dashboardService);
     app.use("/dashBoard", dashboardRoute.router);

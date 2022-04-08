@@ -100,17 +100,47 @@ export class KdbxVaultService implements IVaultService {
         }
       }
       const entry = db.createEntry(group);
+      let passwordDefined = Object.prototype.hasOwnProperty.call(
+        row,
+        "Password"
+      )
+        ? true
+        : false;
+      let userDefined = Object.prototype.hasOwnProperty.call(row, "UserName")
+        ? true
+        : false;
+      let titleDefined = Object.prototype.hasOwnProperty.call(row, "Title")
+        ? true
+        : false;
       for (const [key, value] of Object.entries(row)) {
-        if (this.passwordNames.includes(key.toUpperCase())) {
+        if (
+          !passwordDefined &&
+          this.passwordNames.includes(key.toUpperCase())
+        ) {
           entry.fields.set(
             "Password",
             kdbxweb.ProtectedValue.fromString(String(value))
           );
-        } else if (this.titleNames.includes(key.toUpperCase())) {
+          passwordDefined = true;
+        } else if (
+          !titleDefined &&
+          this.titleNames.includes(key.toUpperCase())
+        ) {
           entry.fields.set("Title", String(value));
-        } else if (this.usernameNames.includes(key.toUpperCase())) {
+          titleDefined = true;
+        } else if (
+          !userDefined &&
+          this.usernameNames.includes(key.toUpperCase())
+        ) {
           entry.fields.set("UserName", String(value));
+          userDefined = true;
         } else {
+          if (this.passwordNames.includes(key.toUpperCase())) {
+            entry.fields.set(
+              key,
+              kdbxweb.ProtectedValue.fromString(String(value))
+            );
+          }
           entry.fields.set(key, String(value));
         }
       }
