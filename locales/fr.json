@@ -35,5 +35,6 @@
   "thank_you_Keep_Going": "Merci! 👍 Continuez! 💪",
   "secret_mail_subject": "[Confidentiel] Mot de passe",
   "secret_mail_body": "Bonjour,%0D%0A%0D%0AMerci de trouver le mot de passe pour ....%0D%0A%0D%0AATTENTION : Ce lien est à __USAGE UNIQUE__. Dès qu%27il est lu, l%27information est __DETRUITE__%0D%0A%0D%0A",
-  "secret_send_email": "Envoyer par email"
+  "secret_send_email": "Envoyer par email",
+  "kp_generate_link_to_share": "Générer un lien partageable pour le mot de passe"
 }

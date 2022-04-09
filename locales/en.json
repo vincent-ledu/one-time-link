@@ -35,5 +35,6 @@
   "thank_you_Keep_Going": "Thank you! 👍 Keep Going! 💪",
   "secret_mail_subject": "[Confidential] Password",
   "secret_mail_body": "Hello,%0D%0A%0D%0AThank to find below the password for .....%0D%0A%0D%0ABE CAREFULL: This link is a __ONE TIME LINK__. Once the password is read, it is __DESTROYED__%0D%0A%0D%0A",
-  "secret_send_email": "Send by email"
+  "secret_send_email": "Send by email",
+  "kp_generate_link_to_share": "Generate a link to share for password"
 }
