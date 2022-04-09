@@ -71,6 +71,7 @@ export async function startApp(): Promise<App> {
   const passwordGeneratorRoute = new PasswordGeneratorRoute(
     passwordGeneratorService
   );
+  let homeRoute: HomeRoute;
   if (
     !isInTest &&
     databaseConfig.dbType === DbType.MYSQL &&
@@ -78,10 +79,12 @@ export async function startApp(): Promise<App> {
   ) {
     const dashboardService = new MySQLDashboardService(knex);
     const dashboardRoute = new DashboardRoute(dashboardService);
+    homeRoute = new HomeRoute(dashboardService);
     app.use("/dashBoard", dashboardRoute.router);
+  } else {
+    homeRoute = new HomeRoute(undefined);
   }
   const secretRoute = new SecretRoute(encryptService);
-  const homeRoute = new HomeRoute();
   app.use("/", homeRoute.router);
   app.use("/password", passwordGeneratorRoute.router);
   app.use("/secret", secretRoute.router);

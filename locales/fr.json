@@ -27,5 +27,10 @@
   "Secrets": "Secrets",
   "Keepass": "Keepass",
   "create_a_keepass": "Créer un KeePass",
-  "create_n_share_secret": "Créer et partager un secret"
+  "create_n_share_secret": "Créer et partager un secret",
+  "since": "Depuis ",
+  "keepass_have_been_created_and_over": "KeePass ont été créés, et plus de ",
+  "entries_has_been_saved_from_the_ugly_XL_Sheet_stored_on_shared_or_desktop": "mots de passe on été sauvées de l'horrible Excel, stockés sur des partages ou sur un bureau.",
+  "secrets_have_been_share_by_more_secure_channel_than_mail_waiting_unencrypted_in_thousand_mailbox": "secrets ont été partagés par un canal plus sécurisé qu'un mail, attendant dans une boite mail",
+  "thank_you_Keep_Going": "Merci! Continuez!"
 }

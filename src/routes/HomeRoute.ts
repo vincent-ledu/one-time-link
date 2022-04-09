@@ -1,11 +1,12 @@
 import { HomeController } from "../controller/HomeController";
+import { IDashboardService } from "../services/IDashboardService";
 import Routes from "./Routes";
 
 export class HomeRoute extends Routes {
   homeController: HomeController;
-  constructor() {
+  constructor(dashBoardService: IDashboardService) {
     super();
-    this.homeController = new HomeController();
+    this.homeController = new HomeController(dashBoardService);
     this.intializeRoutes();
   }
   protected intializeRoutes(): void {

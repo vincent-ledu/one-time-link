@@ -9,7 +9,27 @@
 
     <main>
       <div class="jumbotron">
-        <div class="container">
+        <% if (stats) { %>
+        <p>
+          <%= `${__("since")} `%><strong
+            ><%=`${keepassStat.createdAt}, ${keepassStat.counter} ` %></strong
+          ><%= `${__("keepass_have_been_created_and_over")} ` %><strong
+            ><%= `${keepassEntriesStat.counter} ` %></strong
+          ><%=`${__("entries_has_been_saved_from_the_ugly_XL_Sheet_stored_on_shared_or_desktop")}`
+          %>
+        </p>
+        <p>
+          <%= `${__("since")}` %>
+          <strong
+            ><%= `${secretsStat.createdAt}, ${secretsStat.counter}` %></strong
+          >
+          <%=
+          `${__("secrets_have_been_share_by_more_secure_channel_than_mail_waiting_unencrypted_in_thousand_mailbox")}`
+          %>
+        </p>
+        <p><strong><%= __("thank_you_Keep_Going") %></strong></p>
+        <% } %>
+        <div class="d-flex justify-content-around">
           <a href="/vault" class="btn btn-success"
             ><%= __("create_a_keepass") %></a
           >

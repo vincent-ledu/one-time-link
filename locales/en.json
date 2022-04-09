@@ -27,5 +27,10 @@
   "dashboard": "Dashboard",
   "submit": "Submit",
   "create_a_keepass": "Create a KeePass",
-  "create_n_share_secret": "Create and share a secret"
+  "create_n_share_secret": "Create and share a secret",
+  "since": "Since",
+  "keepass_have_been_created_and_over": "KeePass have been created and over",
+  "entries_has_been_saved_from_the_ugly_XL_Sheet_stored_on_shared_or_desktop": "passwords has been saved from the ugly XL Sheet, stored on shared or desktop.",
+  "secrets_have_been_share_by_more_secure_channel_than_mail_waiting_unencrypted_in_thousand_mailbox": "secrets have been share by a more secure channel than mail waiting in a mailbox",
+  "thank_you_Keep_Going": "Thank you! Keep Going!"
 }
