@@ -11,9 +11,8 @@
       <div class="jumbotron">
         <% if (stats) { %>
         <p>
-          <%= `${__("since")} `%><strong
-            ><%=`${keepassStat.createdAt}, ${keepassStat.counter} ` %></strong
-          ><%= `${__("keepass_have_been_created_and_over")} ` %><strong
+          <strong> ${keepassStat.counter} ` %></strong><%=
+          `${__("keepass_have_been_created_and_over")} ` %><strong
             ><%= `${keepassEntriesStat.counter} ` %></strong
           ><%=`${__("entries_has_been_saved_from_the_ugly_XL_Sheet_stored_on_shared_or_desktop")}`
           %>
