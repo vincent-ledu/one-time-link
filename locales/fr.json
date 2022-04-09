@@ -32,5 +32,8 @@
   "keepass_have_been_created_and_over": "KeePass ont été créés, et plus de ",
   "entries_has_been_saved_from_the_ugly_XL_Sheet_stored_on_shared_or_desktop": "mots de passe on été sauvées de l'horrible Excel, stockés sur des partages ou sur un bureau.",
   "secrets_have_been_share_by_more_secure_channel_than_mail_waiting_unencrypted_in_thousand_mailbox": "secrets ont été partagés par un canal plus sécurisé qu'un mail, attendant dans une boite mail",
-  "thank_you_Keep_Going": "Merci! Continuez!"
+  "thank_you_Keep_Going": "Merci! 👍 Continuez! 💪",
+  "secret_mail_subject": "[Confidentiel] Mot de passe",
+  "secret_mail_body": "Bonjour,%0D%0A%0D%0AMerci de trouver le mot de passe pour ....%0D%0A%0D%0AATTENTION : Ce lien est à __USAGE UNIQUE__. Dès qu%27il est lu, l%27information est __DETRUITE__%0D%0A%0D%0A",
+  "secret_send_email": "Envoyer par email"
 }

@@ -32,5 +32,8 @@
   "keepass_have_been_created_and_over": "KeePass have been created and over",
   "entries_has_been_saved_from_the_ugly_XL_Sheet_stored_on_shared_or_desktop": "passwords has been saved from the ugly XL Sheet, stored on shared or desktop.",
   "secrets_have_been_share_by_more_secure_channel_than_mail_waiting_unencrypted_in_thousand_mailbox": "secrets have been share by a more secure channel than mail waiting in a mailbox",
-  "thank_you_Keep_Going": "Thank you! Keep Going!"
+  "thank_you_Keep_Going": "Thank you! 👍 Keep Going! 💪",
+  "secret_mail_subject": "[Confidential] Password",
+  "secret_mail_body": "Hello,%0D%0A%0D%0AThank to find below the password for .....%0D%0A%0D%0ABE CAREFULL: This link is a __ONE TIME LINK__. Once the password is read, it is __DESTROYED__%0D%0A%0D%0A",
+  "secret_send_email": "Send by email"
 }
