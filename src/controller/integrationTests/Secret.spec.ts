@@ -88,4 +88,29 @@ describe("Secret Integration Tests", function () {
     expect(res1.data.password).to.be.equal(res.data.password);
     expect(res1.data.date).to.be.equal(res.data.date);
   });
+  it("should get getSecret Rendered page", async function () {
+    const message =
+      "#\"$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'";
+    const secret = await axios.post(baseUrl + "/secret", { message: message });
+    const res = await axios.get(
+      `${baseUrl}/secret/${secret.data.date}/${secret.data.id}/${secret.data.password}`
+    );
+    expect(res.status).to.be.equals(200);
+  });
+  it("should get error if parameters are not well formated exist", async function () {
+    await expect(
+      axios.get(`${baseUrl}/secret/20220623/123/test`)
+    ).to.eventually.rejectedWith("Request failed with status code 500");
+  });
+  it("should get error notfound if parameter are not well formated exist", async function () {
+    await expect(
+      axios.delete(baseUrl + "/secret", {
+        data: {
+          id: "5223ec09-6666-6666-6666-06ce3754d6a9",
+          date: "2022-04-11",
+          password: "MQRDTRojH6hFdft2MUUaaS61",
+        },
+      })
+    ).to.eventually.rejectedWith("Request failed with status code 404");
+  });
 });

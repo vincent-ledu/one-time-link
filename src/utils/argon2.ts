@@ -11,7 +11,7 @@ export function argon2(
   version: kdbxweb.CryptoEngine.Argon2Version
 ): Promise<ArrayBuffer> {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  let Module = require("./argon2-asm.min");
+  let Module = require("./argon2asm.min");
   if (Module.default) {
     Module = Module.default;
   }

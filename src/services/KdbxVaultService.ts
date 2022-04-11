@@ -55,7 +55,7 @@ export class KdbxVaultService implements IVaultService {
           counterName: counterName,
         });
       }
-      this.knex(this.counterTable)
+      await this.knex(this.counterTable)
         .where("counterName", "=", counterName)
         .increment("counter", inc ? inc : 1)
         .catch((reason) => {

@@ -53,9 +53,11 @@ export class AES256EncryptServiceMySQL implements IEncryptService {
   encryptSecret = async (secret: Secret): Promise<void> => {
     Logger.info(`Encrypting secret ${secret.id} from db`);
 
-    if (secret.message !== "") {
+    if (secret.message.trim() !== "") {
       this.encryptMessage(secret.id, secret.message, secret.password);
       await this.upCounter("SecretsEncrypted");
+    } else {
+      throw new Error("Message empty");
     }
   };
   decryptSecret = async (secret: Secret): Promise<Secret> => {
@@ -86,6 +88,7 @@ export class AES256EncryptServiceMySQL implements IEncryptService {
       } catch (error) {
         Logger.error("knex error");
         Logger.error(error);
+        throw error;
       }
     });
     message.pipe(gzip).pipe(cipher).pipe(appendInitVect).pipe(bs);
