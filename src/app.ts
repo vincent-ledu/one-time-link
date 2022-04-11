@@ -17,6 +17,7 @@ import path from "path";
 import { IVaultService } from "./services/IVaultService";
 import { PasswordGeneratorService } from "./services/PasswordGeneratorService";
 import { PasswordGeneratorRoute } from "./routes/PasswordGeneratorRoute";
+import { ActuatorRoute } from "./routes/ActuatorRoute";
 
 export interface App {
   stop: () => Promise<void>;
@@ -85,6 +86,7 @@ export async function startApp(): Promise<App> {
     homeRoute = new HomeRoute(undefined);
   }
   const secretRoute = new SecretRoute(encryptService);
+  const actuatorRoute = new ActuatorRoute(databaseConfig.dbType, knex);
   app.use("/", homeRoute.router);
   app.use("/password", passwordGeneratorRoute.router);
   app.use("/secret", secretRoute.router);
@@ -92,6 +94,7 @@ export async function startApp(): Promise<App> {
   app.use("/api/password", passwordGeneratorRoute.router);
   app.use("/api/secret", secretRoute.router);
   app.use("/api/vault", vaultRoute.router);
+  app.use("/actuator", actuatorRoute.router);
   //#endregion
   Logger.info(`Loading ${process.env.NODE_ENV} configuration`);
   const PORT = process.env.SERVER_PORT
