@@ -14,7 +14,7 @@ export class SecretRoute extends Routes {
   protected intializeRoutes(): void {
     this.router.post(
       "/",
-      body("message").escape().exists({ checkNull: true }),
+      body("message").escape().isString().isLength({ min: 1 }),
       this.secretController.createSecret
     );
     this.router.delete(

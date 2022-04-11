@@ -7,7 +7,7 @@ require("dotenv").config();
 const connection = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
-  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
+  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 4406,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME || "one-time-link-db",
 };

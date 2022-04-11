@@ -97,12 +97,12 @@ describe("Secret Integration Tests", function () {
     );
     expect(res.status).to.be.equals(200);
   });
-  it("should get error if parameters are not well formated exist", async function () {
+  it("should get error if parameters are not well formated", async function () {
     await expect(
       axios.get(`${baseUrl}/secret/20220623/123/test`)
-    ).to.eventually.rejectedWith("Request failed with status code 500");
+    ).to.eventually.rejectedWith("Request failed with status code 400");
   });
-  it("should get error notfound if parameter are not well formated exist", async function () {
+  it("should get error notfound if secret does not exist", async function () {
     await expect(
       axios.delete(baseUrl + "/secret", {
         data: {
@@ -112,5 +112,28 @@ describe("Secret Integration Tests", function () {
         },
       })
     ).to.eventually.rejectedWith("Request failed with status code 404");
+  });
+  it("should get error bad parameter if parameters are not valid", async function () {
+    await expect(
+      axios.delete(baseUrl + "/secret", {
+        data: {
+          id: "5223ec09-6666-6666-6666",
+          date: "2022-04-11",
+          password: "MQRDTRojH6hFdft2MUUaaS61",
+        },
+      })
+    ).to.eventually.rejectedWith("Request failed with status code 400");
+  });
+  it("should get landing page for creating secrets", async function () {
+    const res = await axios.get(baseUrl + "/secret");
+    expect(res.status).to.be.eq(200);
+  });
+  it("should return an error while message is empty", async function () {
+    await expect(
+      axios.post(baseUrl + "/secret", { message: "" })
+    ).to.be.rejectedWith("Request failed with status code 400");
+    await expect(axios.post(baseUrl + "/secret")).to.be.rejectedWith(
+      "Request failed with status code 400"
+    );
   });
 });

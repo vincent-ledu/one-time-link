@@ -6,7 +6,7 @@ services:
     image: mariadb:10.7
     restart: always
     ports:
-      - "3306:3306"
+      - "4406:3306"
     volumes:
       - mysqldata:/var/lib/mysql
     environment:

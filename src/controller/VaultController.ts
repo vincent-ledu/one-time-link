@@ -5,6 +5,7 @@ import { IVaultService } from "../services/IVaultService";
 import Logger from "../utils/logger";
 import csv from "csvtojson";
 import { ProtectedValue } from "kdbxweb";
+import BadParameters from "../domain/errors/BadParameters";
 
 export class VaultController extends AController {
   vaultService: IVaultService;
@@ -20,7 +21,7 @@ export class VaultController extends AController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw errors;
+        throw new BadParameters();
       }
       let jsonObj;
       const password = req.body.password;
@@ -32,6 +33,7 @@ export class VaultController extends AController {
         );
         jsonObj = await csv({
           delimiter: ["\t"],
+          ignoreEmpty: true,
         })
           .on("header", (header) => {
             const dupHeader = header.filter(
@@ -49,8 +51,7 @@ export class VaultController extends AController {
         jsonObj = req.body.data;
       }
       if (!jsonObj) {
-        res.status(400);
-        return;
+        throw new BadParameters();
       }
       const db = await this.vaultService.createVault(
         jsonObj,

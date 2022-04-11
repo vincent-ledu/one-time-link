@@ -30,6 +30,13 @@ describe("Password generator tests", () => {
     );
     expect(res.data).to.be.a("string").length(16);
   });
+  it("should return a password specficied by option", async () => {
+    server = await startApp();
+    const res = await axios.get(
+      baseUrl + "/password?len=16&numbers=true&symbols=true&strict=true"
+    );
+    expect(res.data).to.be.a("string").length(16);
+  });
   it("should return error if parameter are craps", async () => {
     server = await startApp();
     await expect(

@@ -9,6 +9,7 @@ pipeline {
       steps {
         sh script: 'rm -rf *'
         checkout scm
+        sh label: 'create tmp mysql for integration tests', scripts: 'docker-compose up -d db'
         sh label: 'Installing deps', script: 'npm ci --no-progress'
         sh label: 'Building', script: 'npm run build'
         sh label: 'Packaging', script: 'npm run pack'
@@ -35,6 +36,8 @@ pipeline {
 
     always {
 		 	sh 'docker logout'
+      sh label: 'stop mysql docker', scripts: 'docker-compose down -d db'
+
     }
   }
 }

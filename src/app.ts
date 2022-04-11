@@ -42,7 +42,7 @@ export async function startApp(): Promise<App> {
   });
 
   app.use(express.json());
-  app.use(express.urlencoded());
+  app.use(express.urlencoded({ extended: true }));
   app.use(i18n.init);
 
   //#region Database
