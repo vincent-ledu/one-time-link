@@ -7,7 +7,7 @@ const Constants = require("../Constants");
 exports.up = async function (knex) {
   return knex(Constants.TABLE_NAMES.COUNTER)
     .select()
-    .where("counterName", "KeepassEntrie")
+    .where("counterName", "KeepassEntries")
     .then(function (rows) {
       if (rows.length === 0) {
         return knex(Constants.TABLE_NAMES.COUNTER).insert([
