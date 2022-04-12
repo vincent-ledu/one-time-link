@@ -38,7 +38,7 @@ after(async () => {
 
 describe("Vault Integration Tests", function () {
   this.slow(200);
-  it("should server respond 200", async function () {
+  it.skip("should server respond 200", async function () {
     const res = await axios.get(baseUrl + "/");
     expect(res.status).to.be.equal(200);
   });

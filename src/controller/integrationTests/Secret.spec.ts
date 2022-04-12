@@ -28,7 +28,7 @@ after(async () => {
   await server.stop();
 });
 describe("Secret Integration Tests", function () {
-  it("should server respond 200", async function () {
+  it.skip("should server respond 200", async function () {
     const res = await axios.get(baseUrl + "/");
     expect(res.status).to.be.equal(200);
   });
