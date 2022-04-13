@@ -8,7 +8,7 @@
     "prebuild": "eslint . --ext .ts --fix",
     "build": "tsc",
     "dockerbuild": "tsc",
-    "postbuild": "npm test:covereport",
+    "postbuild": "npm run test:covreport",
     "pack": "cp src/utils/argon2asm.min.js dist/utils/ && tar --exclude='tests' --exclude='./tests' --exclude='./src' --exclude='./.git' --exclude='./one-time-link.tgz' -czf ../one-time-link.tgz  . && mv ../one-time-link.tgz .",
     "test": "cross-env NODE_ENV=TEST mocha -r ts-node/register src/**/*.spec.ts",
     "test:watch": "cross-env NODE_ENV=TEST mocha -r ts-node/register src/**/*.spec.ts --watch",
