@@ -14,7 +14,7 @@ pipeline {
         sh label: 'Building', script: 'npm run build'
         sh label: 'Packaging', script: 'npm run pack'
         archiveArtifacts artifacts: "${archive_file}", defaultExcludes: false, followSymlinks: false, onlyIfSuccessful: true
-        step([$class: 'CoberturaPublisher', coberturaReportFile: './coverage/cobertura-coverage.xml'])
+        step([$class: 'CoberturaPublisher', coberturaReportFile: 'coverage/cobertura-coverage.xml'])
       }
     }
     stage('Deploy') {
