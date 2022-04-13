@@ -3,8 +3,6 @@ import { expect } from "chai";
 import axios from "axios";
 import { Kdbx, KdbxCredentials } from "kdbxweb";
 import { ProtectedValue } from "kdbxweb";
-import Logger from "../../utils/logger";
-import fs from "fs";
 
 let server: App;
 let baseUrl: string;
@@ -416,7 +414,7 @@ prod	db	linux	redhat7	login	secret123	mytitle	lastgroup\r\n\
     expect(title).to.be.eq(latin1char);
   });
 
-  it("should multiple user defined ??", async function () {
+  it("should multiple user defined", async function () {
     const res = await axios.post(
       baseUrl + "/vault",
       {
@@ -446,8 +444,6 @@ prod	db	linux	redhat7	login	secret123	mytitle	lastgroup\r\n\
       file.buffer,
       new KdbxCredentials(ProtectedValue.fromString(password))
     );
-    fs.writeFileSync("/tmp/userkdbx.kdbx", Buffer.from(file.buffer));
-
     expect(db.versionMajor).to.be.eq(4);
     const entry = db.getDefaultGroup().entries[0];
     expect(entry.fields.get("UserName")).to.be.eq("login");

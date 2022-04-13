@@ -9,7 +9,7 @@ pipeline {
       steps {
         sh script: 'rm -rf *'
         checkout scm
-        sh label: 'create tmp mysql for integration tests', script: 'docker-compose up -d db && sleep 10'
+        sh label: 'create tmp mysql for integration tests', script: 'docker-compose up -d db'
         sh label: 'Installing deps', script: 'npm ci --no-progress'
         sh label: 'Building', script: 'npm run build'
         sh label: 'Packaging', script: 'npm run pack'
