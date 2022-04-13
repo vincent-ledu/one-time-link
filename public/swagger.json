@@ -1,0 +1,29 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "one-time-link",
+		"version": "0.0.1",
+		"description": "A one time link app",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {
+			"name": "Vincent LE DÛ"
+		}
+	},
+	"openapi": "3.0.0",
+	"paths": {},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}

@@ -2,13 +2,16 @@ import { AController } from "./AController";
 import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 import { IPasswordGeneratorService } from "../services/IPasswordGeneratorService";
+import { Get, Route } from "tsoa";
 
+@Route("password")
 export class PasswordGeneratorController extends AController {
   passwordGeneratorService: IPasswordGeneratorService;
   constructor(passwordGeneratorService: IPasswordGeneratorService) {
     super();
     this.passwordGeneratorService = passwordGeneratorService;
   }
+  @Get("/")
   generatePassword = (req: Request, res: Response): Promise<void> => {
     try {
       const errors = validationResult(req);

@@ -18,6 +18,7 @@ import { IVaultService } from "./services/IVaultService";
 import { PasswordGeneratorService } from "./services/PasswordGeneratorService";
 import { PasswordGeneratorRoute } from "./routes/PasswordGeneratorRoute";
 import { ActuatorRoute } from "./routes/ActuatorRoute";
+import swaggerUi from "swagger-ui-express";
 
 export interface App {
   stop: () => Promise<void>;
@@ -34,6 +35,15 @@ export async function startApp(): Promise<App> {
   app.set("view engine", "ejs");
   app.use(express.static("public"));
 
+  app.use(
+    "/docs",
+    swaggerUi.serve,
+    swaggerUi.setup(undefined, {
+      swaggerOptions: {
+        url: "/swagger.json",
+      },
+    })
+  );
   const i18n = new I18n();
   i18n.configure({
     locales: ["en", "fr"],
