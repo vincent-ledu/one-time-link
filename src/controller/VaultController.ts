@@ -13,7 +13,12 @@ export class VaultController extends AController {
     this.vaultService = vaultService;
   }
   home = (req: Request, res: Response): void => {
-    res.render("pages/createKeepass");
+    res.render("pages/createKeepass", {
+      usernameNames: this.vaultService.usernameNames, 
+      passwordNames: this.vaultService.passwordNames, 
+      groupNames: this.vaultService.groupNames, 
+      titleNames: this.vaultService.titleNames
+    });
   };
 
   createVault = async (req: Request, res: Response): Promise<void> => {
