@@ -5,6 +5,7 @@ import { Secret } from "../domain/Secret";
 import { validationResult } from "express-validator";
 import Logger from "../utils/logger";
 import { decode } from "html-entities";
+import BadParameters from "../domain/errors/BadParameters";
 
 export class SecretController extends AController {
   encryptService: IEncryptService;
@@ -17,7 +18,7 @@ export class SecretController extends AController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw errors;
+        throw new BadParameters();
       }
 
       res.render("pages/getSecret", {
@@ -34,7 +35,7 @@ export class SecretController extends AController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw errors;
+        throw new BadParameters();
       }
       const payload = req.body;
       const secret = new Secret(
@@ -60,7 +61,7 @@ export class SecretController extends AController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        throw errors;
+        throw new BadParameters();
       }
       const payload = req.body;
       const secret = new Secret(

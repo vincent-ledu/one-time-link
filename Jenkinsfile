@@ -9,18 +9,20 @@ pipeline {
       steps {
         sh script: 'rm -rf *'
         checkout scm
+        sh label: 'create tmp mysql for integration tests', script: 'docker-compose up -d db'
         sh label: 'Installing deps', script: 'npm ci --no-progress'
         sh label: 'Building', script: 'npm run build'
         sh label: 'Packaging', script: 'npm run pack'
         archiveArtifacts artifacts: "${archive_file}", defaultExcludes: false, followSymlinks: false, onlyIfSuccessful: true
+        step([$class: 'CoberturaPublisher', coberturaReportFile: 'coverage/cobertura-coverage.xml'])
       }
     }
     stage('Deploy') {
       steps {
-        sh label: 'Stop application', script: "sudo -u www-data npm run stop:production"
+        sh label: 'Stop application', script: "sudo -u www-data pm2 kill || true"
         sh label: 'Untar', script: "rm -rf /tmp/one-time-link && mkdir /tmp/one-time-link/ && tar xzf ${archive_file} -C /tmp/one-time-link"
         sh label: 'Deploy', script: "sudo sh -c \"cp -r /tmp/one-time-link/* /var/www/https.one-time-link.ledu.dev/ && rm -rf /tmp/one-time-link && chown -R www-data:www-data /var/www/https.one-time-link.ledu.dev\""
-        sh label: 'Start application', script: "cd /var/www/https.one-time-link.ledu.dev && sudo -u www-data npm run start:production"
+        sh label: 'Start application', script: "cd /var/www/https.one-time-link.ledu.dev && sudo -u www-data pm2 start --env production"
       }
     }
     stage('Publish dockerhub image') {
@@ -35,6 +37,9 @@ pipeline {
 
     always {
 		 	sh 'docker logout'
+      sh label: 'stop mysql docker', script: 'docker-compose stop db'
+      sh label: 'delete mysql docker', script: 'docker-compose rm -f db'
+
     }
   }
 }

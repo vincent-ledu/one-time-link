@@ -42,7 +42,7 @@ export async function startApp(): Promise<App> {
   });
 
   app.use(express.json());
-  app.use(express.urlencoded());
+  app.use(express.urlencoded({ extended: true }));
   app.use(i18n.init);
 
   //#region Database
@@ -73,11 +73,7 @@ export async function startApp(): Promise<App> {
     passwordGeneratorService
   );
   let homeRoute: HomeRoute;
-  if (
-    !isInTest &&
-    databaseConfig.dbType === DbType.MYSQL &&
-    knex !== undefined
-  ) {
+  if (databaseConfig.dbType === DbType.MYSQL && knex !== undefined) {
     const dashboardService = new MySQLDashboardService(knex);
     const dashboardRoute = new DashboardRoute(dashboardService);
     homeRoute = new HomeRoute(dashboardService);

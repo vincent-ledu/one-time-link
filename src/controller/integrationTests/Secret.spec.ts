@@ -11,7 +11,7 @@ before(async () => {
   process.env.DB_HOST = "127.0.0.1";
   process.env.DB_VERSION = "0.1";
   process.env.DB_PASSWORD = "pwd";
-  process.env.DB_PORT = "3306";
+  process.env.DB_PORT = "4406";
   process.env.DB_NAME = "one-time-link-db";
   process.env.DB_TYPE = "MYSQL";
   process.env.DB_USER = "one-time-link-user";
@@ -28,7 +28,7 @@ after(async () => {
   await server.stop();
 });
 describe("Secret Integration Tests", function () {
-  it("should server respond 200", async function () {
+  it.skip("should server respond 200", async function () {
     const res = await axios.get(baseUrl + "/");
     expect(res.status).to.be.equal(200);
   });
@@ -87,5 +87,53 @@ describe("Secret Integration Tests", function () {
     expect(res1.data.id).to.be.equal(res.data.id);
     expect(res1.data.password).to.be.equal(res.data.password);
     expect(res1.data.date).to.be.equal(res.data.date);
+  });
+  it("should get getSecret Rendered page", async function () {
+    const message =
+      "#\"$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'";
+    const secret = await axios.post(baseUrl + "/secret", { message: message });
+    const res = await axios.get(
+      `${baseUrl}/secret/${secret.data.date}/${secret.data.id}/${secret.data.password}`
+    );
+    expect(res.status).to.be.equals(200);
+  });
+  it("should get error if parameters are not well formated", async function () {
+    await expect(
+      axios.get(`${baseUrl}/secret/20220623/123/test`)
+    ).to.eventually.rejectedWith("Request failed with status code 400");
+  });
+  it("should get error notfound if secret does not exist", async function () {
+    await expect(
+      axios.delete(baseUrl + "/secret", {
+        data: {
+          id: "5223ec09-6666-6666-6666-06ce3754d6a9",
+          date: "2022-04-11",
+          password: "MQRDTRojH6hFdft2MUUaaS61",
+        },
+      })
+    ).to.eventually.rejectedWith("Request failed with status code 404");
+  });
+  it("should get error bad parameter if parameters are not valid", async function () {
+    await expect(
+      axios.delete(baseUrl + "/secret", {
+        data: {
+          id: "5223ec09-6666-6666-6666",
+          date: "2022-04-11",
+          password: "MQRDTRojH6hFdft2MUUaaS61",
+        },
+      })
+    ).to.eventually.rejectedWith("Request failed with status code 400");
+  });
+  it("should get landing page for creating secrets", async function () {
+    const res = await axios.get(baseUrl + "/secret");
+    expect(res.status).to.be.eq(200);
+  });
+  it("should return an error while message is empty", async function () {
+    await expect(
+      axios.post(baseUrl + "/secret", { message: "" })
+    ).to.be.rejectedWith("Request failed with status code 400");
+    await expect(axios.post(baseUrl + "/secret")).to.be.rejectedWith(
+      "Request failed with status code 400"
+    );
   });
 });

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Knex } from "knex";
+import InternalError from "../domain/errors/InternalError";
 import { DbType } from "../utils/DbConfig";
 import Logger from "../utils/logger";
 import { AController } from "./AController";
@@ -13,35 +14,39 @@ export class ActuatorController extends AController {
     this.knex = knex;
   }
 
-  test(res: Response) {
+  async test(res: Response): Promise<boolean> {
     if (this.dbType === DbType.MYSQL) {
-      this.knex
-        .raw("select 1+1 as result")
-        .then(() => {
-          res.status(200).send({ dbType: this.dbType, connectionStatus: "OK" });
-        })
-        .catch((err) => {
-          console.log(err);
-          res.status(500).send(err);
-        });
+      try {
+        await this.knex.raw("select 1+1 as result");
+        return true;
+      } catch (err) {
+        throw new InternalError("Mysql not reachable");
+      }
     } else if (this.dbType === DbType.IN_MEMORY) {
-      res.status(200).send({ dbType: this.dbType });
+      return true;
     } else {
-      Logger.error(
+      throw new InternalError(
         `DB_TYPE not recognized: ${this.dbType}. Please review environnement variables.`
       );
-      res.status(400).send({
-        dbType: this.dbType,
-        message:
-          "DB Type not recognize... review your config file... not sure of the dbType used...",
-      });
     }
   }
 
   readiness = async (req: Request, res: Response): Promise<void> => {
-    this.test(res);
+    try {
+      await this.test(res);
+      res.status(200).send({ dbType: this.dbType, connectionStatus: "OK" });
+    } catch (err) {
+      Logger.error(err.stack);
+      AController.processErrors(err, res);
+    }
   };
   liveness = async (req: Request, res: Response): Promise<void> => {
-    this.test(res);
+    try {
+      await this.test(res);
+      res.status(200).send({ dbType: this.dbType, connectionStatus: "OK" });
+    } catch (err) {
+      Logger.error(err.stack);
+      AController.processErrors(err, res);
+    }
   };
 }

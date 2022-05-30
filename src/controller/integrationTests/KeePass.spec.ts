@@ -3,8 +3,6 @@ import { expect } from "chai";
 import axios from "axios";
 import { Kdbx, KdbxCredentials } from "kdbxweb";
 import { ProtectedValue } from "kdbxweb";
-import Logger from "../../utils/logger";
-import fs from "fs";
 
 let server: App;
 let baseUrl: string;
@@ -19,7 +17,7 @@ before(async () => {
   process.env.DB_HOST = "127.0.0.1";
   process.env.DB_VERSION = "0.1";
   process.env.DB_PASSWORD = "pwd";
-  process.env.DB_PORT = "3306";
+  process.env.DB_PORT = "4406";
   process.env.DB_NAME = "one-time-link-db";
   process.env.DB_TYPE = "MYSQL";
   process.env.DB_USER = "one-time-link-user";
@@ -38,7 +36,7 @@ after(async () => {
 
 describe("Vault Integration Tests", function () {
   this.slow(200);
-  it("should server respond 200", async function () {
+  it.skip("should server respond 200", async function () {
     const res = await axios.get(baseUrl + "/");
     expect(res.status).to.be.equal(200);
   });
@@ -80,6 +78,212 @@ describe("Vault Integration Tests", function () {
       (entry.fields.get("Password") as ProtectedValue).getText()
     ).to.be.equal("secret");
     expect(entry.fields.get("groupe")).to.be.equal("test");
+  });
+
+  it("should create a vault by csv", async function () {
+    const res = await axios.post(
+      baseUrl + "/vault",
+      {
+        projectName: "MyProject",
+        password: password,
+        csv: Buffer.from(
+          escape(
+            "titre\tgroupe\tlogin\tmdp\r\nmytitle\tdb\tlogin\tsecret123\r\n"
+          )
+        ).toString("base64"),
+      },
+      {
+        responseType: "arraybuffer",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "*/*",
+        },
+      }
+    );
+    expect(res.status).to.be.equal(201);
+    const file = new Uint8Array(parseInt(res.headers["content-length"]));
+    file.set(new Uint8Array(res.data));
+    const db = await Kdbx.load(
+      file.buffer,
+      new KdbxCredentials(ProtectedValue.fromString(password))
+    );
+    const entry = db.getDefaultGroup().groups[1].entries[0];
+    expect(entry.fields.get("Title")).to.be.equal("mytitle");
+    expect(entry.fields.get("UserName")).to.be.equal("login");
+    expect(
+      (entry.fields.get("Password") as ProtectedValue).getText()
+    ).to.be.equal("secret123");
+    expect(entry.fields.get("groupe")).to.be.equal("db");
+  });
+
+  it("should create a vault by csv and delete empty line", async function () {
+    const res = await axios.post(
+      baseUrl + "/vault",
+      {
+        projectName: "MyProject",
+        password: password,
+        csv: Buffer.from(
+          escape(
+            "titre\tgroupe\tlogin\tmdp\r\n\
+mytitle\tdb\tlogin\tsecret123\r\n\
+\t\t\t\r\n\
+mytitle2\tdb\tlogin2\tsecret123!\r\n"
+          )
+        ).toString("base64"),
+      },
+      {
+        responseType: "arraybuffer",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "*/*",
+        },
+      }
+    );
+    expect(res.status).to.be.equal(201);
+    const file = new Uint8Array(parseInt(res.headers["content-length"]));
+    file.set(new Uint8Array(res.data));
+    const db = await Kdbx.load(
+      file.buffer,
+      new KdbxCredentials(ProtectedValue.fromString(password))
+    );
+    let counter = 0;
+    for (const entry of db.getDefaultGroup().allEntries()) {
+      counter++;
+    }
+    expect(counter).to.be.eq(2);
+  });
+
+  it("should create groups even if csv contains duplicate columns names", async function () {
+    const res = await axios.post(
+      baseUrl + "/vault",
+      {
+        projectName: "MyProject",
+        password: password,
+        csv: Buffer.from(
+          escape(
+            "groupe	groupe	grp	grp	login	mdp	titre\r\n\
+prod	db	linux	redhat7	login	secret123	mytitle\r\n\
+"
+          )
+        ).toString("base64"),
+      },
+      {
+        responseType: "arraybuffer",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "*/*",
+        },
+      }
+    );
+    expect(res.status).to.be.equal(201);
+    const file = new Uint8Array(parseInt(res.headers["content-length"]));
+    file.set(new Uint8Array(res.data));
+    const db = await Kdbx.load(
+      file.buffer,
+      new KdbxCredentials(ProtectedValue.fromString(password))
+    );
+    let counter = 0;
+    for (const group of db.getDefaultGroup().allGroups()) {
+      counter++;
+    }
+    expect(counter).to.be.eq(6);
+  });
+
+  it("should create groups at the end in the input must work", async function () {
+    const res = await axios.post(
+      baseUrl + "/vault",
+      {
+        projectName: "MyProject",
+        password: password,
+        csv: Buffer.from(
+          escape(
+            "groupe	groupe	grp	grp	login	mdp	titre	groupe\r\n\
+prod	db	linux	redhat7	login	secret123	mytitle	lastgroup\r\n\
+"
+          )
+        ).toString("base64"),
+      },
+      {
+        responseType: "arraybuffer",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "*/*",
+        },
+      }
+    );
+    expect(res.status).to.be.equal(201);
+    const file = new Uint8Array(parseInt(res.headers["content-length"]));
+    file.set(new Uint8Array(res.data));
+    const db = await Kdbx.load(
+      file.buffer,
+      new KdbxCredentials(ProtectedValue.fromString(password))
+    );
+    let counter = 0;
+    for (const group of db.getDefaultGroup().allGroups()) {
+      counter++;
+    }
+    expect(counter).to.be.eq(7);
+  });
+
+  it("should not vault without password", async function () {
+    await expect(
+      axios.post(
+        baseUrl + "/vault",
+        {
+          projectName: "MyProject",
+          password: "",
+          csv: Buffer.from(
+            escape(
+              "groupe	groupe	grp	grp	login	mdp	titre	groupe\r\n\
+prod	db	linux	redhat7	login	secret123	mytitle	lastgroup\r\n\
+"
+            )
+          ).toString("base64"),
+        },
+        {
+          responseType: "arraybuffer",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "*/*",
+          },
+        }
+      )
+    ).to.eventually.be.rejectedWith("Request failed with status code 400");
+  });
+  it("should create a vault with projectName empty", async function () {
+    const res = await axios.post(
+      baseUrl + "/vault",
+      {
+        projectName: "",
+        password: password,
+        csv: Buffer.from(
+          escape(
+            "groupe	groupe	grp	grp	login	mdp	titre	groupe\r\n\
+prod	db	linux	redhat7	login	secret123	mytitle	lastgroup\r\n\
+"
+          )
+        ).toString("base64"),
+      },
+      {
+        responseType: "arraybuffer",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "*/*",
+        },
+      }
+    );
+    expect(res.status).to.be.equal(201);
+    const file = new Uint8Array(parseInt(res.headers["content-length"]));
+    file.set(new Uint8Array(res.data));
+    const db = await Kdbx.load(
+      file.buffer,
+      new KdbxCredentials(ProtectedValue.fromString(password))
+    );
+    let counter = 0;
+    for (const group of db.getDefaultGroup().allGroups()) {
+      counter++;
+    }
+    expect(counter).to.be.eq(7);
   });
 
   it("should create a vault by json, with 3 groups depth", async function () {
@@ -210,7 +414,7 @@ describe("Vault Integration Tests", function () {
     expect(title).to.be.eq(latin1char);
   });
 
-  it("should multiple user defined ??", async function () {
+  it("should multiple user defined", async function () {
     const res = await axios.post(
       baseUrl + "/vault",
       {
@@ -240,13 +444,59 @@ describe("Vault Integration Tests", function () {
       file.buffer,
       new KdbxCredentials(ProtectedValue.fromString(password))
     );
-    fs.writeFileSync("/tmp/userkdbx.kdbx", Buffer.from(file.buffer));
-
     expect(db.versionMajor).to.be.eq(4);
     const entry = db.getDefaultGroup().entries[0];
     expect(entry.fields.get("UserName")).to.be.eq("login");
     expect(entry.fields.get("user")).to.be.eq("user");
     expect(entry.fields.get("username")).to.be.eq("username");
     expect(entry.fields.get("utilisateur")).to.be.eq("utilisateur");
+  });
+  it("should return error 400 if no jsonObj is created", async function () {
+    await expect(
+      axios.post(
+        baseUrl + "/vault",
+        {
+          projectName: "MyProject",
+          password: password,
+        },
+        {
+          responseType: "arraybuffer",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "*/*",
+          },
+        }
+      )
+    ).to.eventually.rejectedWith("Request failed with status code 400");
+  });
+  it("should return error 400 for bad params", async function () {
+    await expect(
+      axios.post(
+        baseUrl + "/vault",
+        {
+          projectName: "MyProject",
+          password: 1,
+          data: [
+            {
+              login: "login",
+              user: "user",
+              username: "username",
+              utilisateur: "utilisateur",
+            },
+          ],
+        },
+        {
+          responseType: "arraybuffer",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "*/*",
+          },
+        }
+      )
+    ).to.eventually.rejectedWith("Request failed with status code 400");
+  });
+  it("should get le the keepass landing page", async function () {
+    const res = await axios.get(baseUrl + "/vault");
+    expect(res.status).to.be.eq(200);
   });
 });
