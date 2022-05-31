@@ -5,4 +5,5 @@ dist/
 tests/data/
 .env
 mysqldata/
-coverage/
+coverage
+/test/data/2022-03-07/*
