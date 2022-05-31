@@ -72,6 +72,9 @@ export class KdbxVaultService implements IVaultService {
   ): Promise<kdbxweb.Kdbx> => {
     const credentials = new kdbxweb.KdbxCredentials(password);
     const db = kdbxweb.Kdbx.create(credentials, vaultName);
+    let hasPasswordColumn = false;
+    let hasUserNameColumn = false;
+    let hasTitleColumn = false;
     this.upCounter("KeepassEntries", jsonObj.length);
     jsonObj.forEach((row) => {
       const groupKeys = Object.keys(row).filter((key) => {
