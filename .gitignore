@@ -6,4 +6,4 @@ tests/data/
 .env
 mysqldata/
 coverage
-tests/data/2022-03-07/*
+tests/data/2022-03-07/
