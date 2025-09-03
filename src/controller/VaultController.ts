@@ -15,10 +15,10 @@ export class VaultController extends AController {
   }
   home = (req: Request, res: Response): void => {
     res.render("pages/createKeepass", {
-      usernameNames: this.vaultService.usernameNames, 
-      passwordNames: this.vaultService.passwordNames, 
-      groupNames: this.vaultService.groupNames, 
-      titleNames: this.vaultService.titleNames
+      usernameNames: this.vaultService.usernameNames,
+      passwordNames: this.vaultService.passwordNames,
+      groupNames: this.vaultService.groupNames,
+      titleNames: this.vaultService.titleNames,
     });
   };
 

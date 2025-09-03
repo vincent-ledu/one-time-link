@@ -7,3 +7,5 @@ tests/data/
 mysqldata/
 coverage
 tests/
+tests/data/2022-03-07/*
+**/msg.enc
